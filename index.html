@@ -32,30 +32,177 @@
 </div>
 </div>
 <script>
-const defaultConfig={cards:[{type:'text',content:'貓',color:'#FF6B6B'},{type:'text',content:'狗',color:'#4ECDC4'},{type:'text',content:'鳥',color:'#45B7D1'},{type:'text',content:'魚',color:'#96CEB4'},{type:'text',content:'花',color:'#FFEAA7'},{type:'text',content:'樹',color:'#DDA0DD'},{type:'text',content:'日',color:'#FFB6C1'},{type:'text',content:'月',color:'#87CEEB'},{type:'text',content:'星',color:'#F0E68C'},{type:'text',content:'雲',color:'#B0E0E6'}],flipDelay:2000};
-let config=JSON.parse(localStorage.getItem('cardGameConfig'))||defaultConfig;
-let flipTimeouts=[];
-let adminMode=false;
-const ADMIN_PASSWORD='admin123';
-let currentCardIndex=0;
-const colors=['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#FFB6C1','#87CEEB','#F0E68C','#B0E0E6','#FF5733','#33FF57','#3357FF','#FF33F6','#33FFF6'];
-function initColorPicker(){const p=document.getElementById('colorPicker');p.innerHTML='';colors.forEach(c=>{const o=document.createElement('div');o.className='color-option';o.style.backgroundColor=c;o.onclick=()=>{document.querySelectorAll('.color-option').forEach(x=>x.classList.remove('selected'));o.classList.add('selected');updatePreview()};p.appendChild(o)})}
-function renderCards(){const g=document.getElementById('cardsGrid');g.innerHTML='';config.cards.forEach((card,i)=>{const el=document.createElement('div');el.className='card';if(adminMode)el.classList.add('admin-mode');let content=card.type==='image'?`<img src="${card.content}">`:`<span style="color:${card.color||'#4ecdc4'}">${card.content}</span>`;let html=`<div class="card-inner"><div class="card-front">🎴</div><div class="card-back">${content}</div></div>`;if(adminMode)html+=`<button class="upload-btn" onclick="event.stopPropagation();uploadCardImage(${i})">${card.type==='image'?'🔄更換':'📷上傳'}</button>`;el.innerHTML=html;el.onclick=()=>flipCard(el,i);g.appendChild(el)})}
-function flipCard(el,i){if(el.classList.contains('flipped')||adminMode)return;el.classList.add('flipped');if(flipTimeouts[i])clearTimeout(flipTimeouts[i]);flipTimeouts[i]=setTimeout(()=>{el.classList.remove('flipped');if(i===config.cards.length-1)createConfetti()},config.flipDelay)}
-function resetGame(){document.querySelectorAll('.card').forEach(c=>c.classList.remove('flipped'));flipTimeouts.forEach(t=>clearTimeout(t));flipTimeouts=[]}
-function createConfetti(){const colors=['#ff6b6b','#4ecdc4','#45b7d1','#ffeaa7','#dda0dd'];for(let i=0;i<30;i++){const c=document.createElement('div');c.style.cssText=`position:fixed;width:10px;height:10px;background:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}vw;top:-10px;z-index:9999;animation:cf ${2+Math.random()*2}s linear forwards`;document.body.appendChild(c);setTimeout(()=>c.remove(),4000)}const s=document.createElement('style');s.textContent=`@keyframes cf{to{transform:translateY(100vh) rotate(720deg);opacity:0}}`;document.head.appendChild(s)}
-function uploadCardImage(i){const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=e=>{const f=e.target.files[0];if(!f||!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=ev=>{config.cards[i]={type:'image',content:ev.target.result,color:config.cards[i]?.color||'#4ecdc4'};localStorage.setItem('cardGameConfig',JSON.stringify(config));renderCards();alert('✅ 圖片已上傳！')};r.readAsDataURL(f)};inp.click()}
-function toggleAdminMode(){const pw=prompt('密碼：');if(pw===ADMIN_PASSWORD){adminMode=!adminMode;const ind=document.getElementById('adminIndicator');const btn=document.getElementById('exitBtn');if(adminMode){ind.classList.add('show');btn.style.display='inline-block';alert('✅ 管理員模式\n💡 點擊卡片上的按鈕上傳圖片')}else{ind.classList.remove('show');btn.style.display='none';alert('✅ 退出管理員')}renderCards()}else if(pw!==null)alert('❌ 密碼錯誤！')}
-function exitAdminMode(){adminMode=false;document.getElementById('adminIndicator').classList.remove('show');document.getElementById('exitBtn').style.display='none';renderCards();alert('✅ 已退出')}
-function openCustomMode(){document.getElementById('customModal').classList.add('active');const sel=document.getElementById('cardNumber');sel.innerHTML='';config.cards.forEach((_,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`卡片 ${i+1}`;sel.appendChild(o)});initColorPicker();loadCardData()}
-function closeModal(){document.getElementById('customModal').classList.remove('active')}
-function loadCardData(){const i=parseInt(document.getElementById('cardNumber').value);currentCardIndex=i;const card=config.cards[i];document.getElementById('contentType').value=card.type||'text';toggleContentType();if(card.type==='text'){document.getElementById('textContent').value=card.content||'';const color=card.color||'#4ecdc4';document.querySelectorAll('.color-option').forEach((opt,idx)=>{if(colors[idx]===color)opt.classList.add('selected');else opt.classList.remove('selected')});updatePreview()}else{document.getElementById('imageUpload').value='';document.getElementById('cardPreview').innerHTML=`<img src="${card.content}">`}}
-function toggleContentType(){const type=document.getElementById('contentType').value;document.getElementById('textGroup').style.display=type==='text'?'block':'none';document.getElementById('imageGroup').style.display=type==='image'?'block':'none';updatePreview()}
-function updatePreview(){const type=document.getElementById('contentType').value;const prev=document.getElementById('cardPreview');if(type==='text'){const txt=document.getElementById('textContent').value||'?';const color=document.querySelector('.color-option.selected')?.style.backgroundColor||'#4ecdc4';prev.innerHTML=`<span class="preview-text" style="color:${color}">${txt}</span>`;}else{const url=document.getElementById('imageUpload').value;prev.innerHTML=url?`<img src="${url}">`:`<span class="preview-text">?</span>`}}
-function handleImageUpload(e){const f=e.target.files[0];if(!f||!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=ev=>{document.getElementById('cardPreview').innerHTML=`<img src="${ev.target.result}">`;updatePreview()};r.readAsDataURL(f)}
-function saveCard(){const i=parseInt(document.getElementById('cardNumber').value);const type=document.getElementById('contentType').value;const card={type,color:'#4ecdc4'};if(type==='text'){card.content=document.getElementById('textContent').value||'新字詞';const sel=document.querySelector('.color-option.selected');if(sel)card.color=sel.style.backgroundColor;}else{const prevImg=document.querySelector('#cardPreview img');if(prevImg&&prevImg.src)card.content=prevImg.src;else{alert('請先選擇圖片！');return}}config.cards[i]=card;localStorage.setItem('cardGameConfig',JSON.stringify(config));renderCards();closeModal();alert('✅ 已儲存！');createConfetti()}
-document.getElementById('adminBtn').onclick=toggleAdminMode;
-renderCards();
-</script>
-</body>
-</html>
+window.addEventListener('DOMContentLoaded', function() {
+  const defaultConfig = {
+    cards: [
+      { type: 'text', content: '貓', color: '#FF6B6B' },
+      { type: 'text', content: '狗', color: '#4ECDC4' },
+      { type: 'text', content: '鳥', color: '#45B7D1' },
+      { type: 'text', content: '魚', color: '#96CEB4' },
+      { type: 'text', content: '花', color: '#FFEAA7' },
+      { type: 'text', content: '樹', color: '#DDA0DD' },
+      { type: 'text', content: '日', color: '#FFB6C1' },
+      { type: 'text', content: '月', color: '#87CEEB' },
+      { type: 'text', content: '星', color: '#F0E68C' },
+      { type: 'text', content: '雲', color: '#B0E0E6' }
+    ],
+    flipDelay: 2000
+  };
+
+  let config = JSON.parse(localStorage.getItem('cardGameConfig')) || defaultConfig;
+  let flipTimeouts = [];
+  let adminMode = false;
+  const ADMIN_PASSWORD = 'admin123';
+  let currentCardIndex = 0;
+  const colors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#FFB6C1','#87CEEB','#F0E68C','#B0E0E6','#FF5733','#33FF57','#3357FF','#FF33F6','#33FFF6'];
+
+  function initColorPicker() {
+    const p = document.getElementById('colorPicker');
+    if (!p) return;
+    p.innerHTML = '';
+    colors.forEach(c => {
+      const o = document.createElement('div');
+      o.className = 'color-option';
+      o.style.backgroundColor = c;
+      o.onclick = () => {
+        document.querySelectorAll('.color-option').forEach(x => x.classList.remove('selected'));
+        o.classList.add('selected');
+        updatePreview();
+      };
+      p.appendChild(o);
+    });
+  }
+
+  function renderCards() {
+    const g = document.getElementById('cardsGrid');
+    if (!g) {
+      console.error('cardsGrid not found!');
+      return;
+    }
+    g.innerHTML = '';
+    config.cards.forEach((card, i) => {
+      const el = document.createElement('div');
+      el.className = 'card';
+      if (adminMode) el.classList.add('admin-mode');
+      let content = '';
+      if (card.type === 'image') {
+        content = '<img src="' + card.content + '" alt="card">';
+      } else {
+        content = '<span style="color:' + (card.color || '#4ecdc4') + '">' + card.content + '</span>';
+      }
+      let html = '<div class="card-inner"><div class="card-front">🎴</div><div class="card-back">' + content + '</div></div>';
+      if (adminMode) {
+        html += '<button class="upload-btn" onclick="event.stopPropagation();uploadCardImage(' + i + ')">' + (card.type === 'image' ? '🔄更換' : '📷上傳') + '</button>';
+      }
+      el.innerHTML = html;
+      el.onclick = () => flipCard(el, i);
+      g.appendChild(el);
+    });
+    console.log('Cards rendered:', config.cards.length);
+  }
+
+  function flipCard(el, i) {
+    if (el.classList.contains('flipped') || adminMode) return;
+    el.classList.add('flipped');
+    if (flipTimeouts[i]) clearTimeout(flipTimeouts[i]);
+    flipTimeouts[i] = setTimeout(() => {
+      el.classList.remove('flipped');
+      if (i === config.cards.length - 1) createConfetti();
+    }, config.flipDelay);
+  }
+
+  function resetGame() {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('flipped'));
+    flipTimeouts.forEach(t => clearTimeout(t));
+    flipTimeouts = [];
+  }
+
+  function createConfetti() {
+    const confettiColors = ['#ff6b6b','#4ecdc4','#45b7d1','#ffeaa7','#dda0dd'];
+    for (let i = 0; i < 30; i++) {
+      const c = document.createElement('div');
+      c.style.cssText = 'position:fixed;width:10px;height:10px;background:' + confettiColors[Math.floor(Math.random() * confettiColors.length)] + ';left:' + (Math.random() * 100) + 'vw;top:-10px;z-index:9999;animation:cf ' + (2 + Math.random() * 2) + 's linear forwards';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4000);
+    }
+    const s = document.createElement('style');
+    s.textContent = '@keyframes cf{to{transform:translateY(100vh) rotate(720deg);opacity:0}}';
+    document.head.appendChild(s);
+  }
+
+  function uploadCardImage(i) {
+    const inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/*';
+    inp.onchange = e => {
+      const f = e.target.files[0];
+      if (!f || !f.type.startsWith('image/')) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        config.cards[i] = { type: 'image', content: ev.target.result, color: config.cards[i]?.color || '#4ecdc4' };
+        localStorage.setItem('cardGameConfig', JSON.stringify(config));
+        renderCards();
+        alert('✅ 圖片已上傳！');
+      };
+      r.readAsDataURL(f);
+    };
+    inp.click();
+  }
+
+  function toggleAdminMode() {
+    const pw = prompt('請輸入管理員密碼：');
+    if (pw === ADMIN_PASSWORD) {
+      adminMode = !adminMode;
+      const ind = document.getElementById('adminIndicator');
+      const btn = document.getElementById('exitBtn');
+      if (adminMode) {
+        ind.classList.add('show');
+        btn.style.display = 'inline-block';
+        alert('✅ 進入管理員模式\n💡 點擊卡片上的按鈕上傳圖片');
+      } else {
+        ind.classList.remove('show');
+        btn.style.display = 'none';
+        alert('✅ 退出管理員模式');
+      }
+      renderCards();
+    } else if (pw !== null) {
+      alert('❌ 密碼錯誤！');
+    }
+  }
+
+  function exitAdminMode() {
+    adminMode = false;
+    document.getElementById('adminIndicator').classList.remove('show');
+    document.getElementById('exitBtn').style.display = 'none';
+    renderCards();
+    alert('✅ 已退出管理員模式');
+  }
+
+  function openCustomMode() {
+    document.getElementById('customModal').classList.add('active');
+    const sel = document.getElementById('cardNumber');
+    sel.innerHTML = '';
+    config.cards.forEach((_, i) => {
+      const o = document.createElement('option');
+      o.value = i;
+      o.textContent = '卡片 ' + (i + 1);
+      sel.appendChild(o);
+    });
+    initColorPicker();
+    loadCardData();
+  }
+
+  function closeModal() {
+    document.getElementById('customModal').classList.remove('active');
+  }
+
+  function loadCardData() {
+    const i = parseInt(document.getElementById('cardNumber').value);
+    currentCardIndex = i;
+    const card = config.cards[i];
+    document.getElementById('contentType').value = card.type || 'text';
+    toggleContentType();
+    if (card.type === 'text') {
+      document.getElementById('textContent').value = card.content || '';
+      const color = card.color || '#4ecdc4';
+      document.querySelectorAll('.color-option').forEach
