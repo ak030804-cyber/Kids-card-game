@@ -55,6 +55,10 @@
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
       color: white;
     }
+    .btn-custom {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+    }
     .btn:hover {
       transform: translateY(-3px) scale(1.05);
       box-shadow: 0 8px 25px rgba(0,0,0,0.4);
@@ -162,11 +166,103 @@
     .upload-btn:hover {
       background: #00f2fe;
     }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .modal-header h2 {
+      color: #667eea;
+      font-size: 1.8rem;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .form-group select:focus,
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    .card-preview {
+      background: #f5f5f5;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-preview img {
+      max-width: 100%;
+      max-height: 100px;
+    }
+    .preview-text {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-save {
+      background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+      color: white;
+      flex: 1;
+    }
+    .btn-close {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+      flex: 1;
+    }
     @media (max-width: 600px) {
       .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
       .card { height: 140px; }
       .card-front { font-size: 2rem; }
       .card-back { font-size: 1.8rem; }
+      .modal-content { padding: 20px; }
     }
   </style>
 </head>
@@ -181,9 +277,49 @@
     </header>
     <div class="controls">
       <button class="btn btn-reset" onclick="resetGame()">🔄 重置遊戲</button>
-      <button class="btn" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white" onclick="exitAdminMode()" id="exitBtn" style="display:none">❌ 退出管理員</button>
+      <button class="btn btn-custom" onclick="openCustomMode()">✏️ 自定義卡片</button>
+      <button class="btn" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white;display:none" id="exitBtn" onclick="exitAdminMode()">❌ 退出管理員</button>
     </div>
     <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+
+  <!-- Custom Mode Modal -->
+  <div class="modal" id="customModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>✏️ 自定義卡片</h2>
+      </div>
+      <div class="form-group">
+        <label for="cardNumber">選擇卡片編號：</label>
+        <select id="cardNumber"></select>
+      </div>
+      <div class="form-group">
+        <label for="contentType">內容類型：</label>
+        <select id="contentType" onchange="toggleContentType()">
+          <option value="text">文字</option>
+          <option value="image">圖片</option>
+        </select>
+      </div>
+      <div class="form-group" id="textGroup">
+        <label for="textContent">文字內容：</label>
+        <textarea id="textContent" rows="3" placeholder="輸入要顯示的文字（例如：貓、狗、蘋果...）"></textarea>
+      </div>
+      <div class="form-group" id="imageGroup" style="display:none;">
+        <label for="imageUpload">選擇圖片：</label>
+        <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
+        <p style="margin-top:8px;color:#666;font-size:0.9rem">💡 圖片將自動轉換為 Base64 格式儲存</p>
+      </div>
+      <div class="form-group">
+        <label>預覽：</label>
+        <div class="card-preview" id="cardPreview">
+          <span class="preview-text">?</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-save" onclick="saveCard()">💾 儲存卡片</button>
+        <button class="btn btn-close" onclick="closeModal()">❌ 關閉</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -271,101 +407,4 @@
 
     // 彩帶效果
     function createConfetti() {
-      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffeaa7', '#dda0dd'];
-      for (let i = 0; i < 30; i++) {
-        const confetti = document.createElement('div');
-        confetti.style.cssText = `
-          position: fixed;
-          width: 10px;
-          height: 10px;
-          background: ${colors[Math.floor(Math.random() * colors.length)]};
-          left: ${Math.random() * 100}vw;
-          top: -10px;
-          z-index: 9999;
-          animation: confettiFall ${2 + Math.random() * 2}s linear forwards;
-        `;
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 4000);
-      }
-      
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes confettiFall {
-          to {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    // 上傳圖片功能
-    function uploadCardImage(index) {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (!file || !file.type.startsWith('image/')) {
-          alert('請選擇有效的圖片文件');
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const base64 = event.target.result;
-          config.cards[index] = {
-            type: 'image',
-            content: base64,
-            color: config.cards[index]?.color || '#4ecdc4'
-          };
-          localStorage.setItem('cardGameConfig', JSON.stringify(config));
-          renderCards();
-          alert('✅ 圖片已上傳！');
-        };
-        reader.readAsDataURL(file);
-      };
-      input.click();
-    }
-
-    // 管理員功能
-    function toggleAdminMode() {
-      const password = prompt('請輸入管理員密碼：');
-      if (password === ADMIN_PASSWORD) {
-        adminMode = !adminMode;
-        const indicator = document.getElementById('adminIndicator');
-        const exitBtn = document.getElementById('exitBtn');
-        
-        if (adminMode) {
-          indicator.classList.add('show');
-          exitBtn.style.display = 'inline-block';
-          alert('✅ 進入管理員模式\n💡 點擊卡片上的「📷 上傳圖片」按鈕更換圖片');
-        } else {
-          indicator.classList.remove('show');
-          exitBtn.style.display = 'none';
-          alert('✅ 退出管理員模式');
-        }
-        renderCards();
-      } else if (password !== null) {
-        alert('❌ 密碼錯誤！');
-      }
-    }
-
-    function exitAdminMode() {
-      adminMode = false;
-      const indicator = document.getElementById('adminIndicator');
-      const exitBtn = document.getElementById('exitBtn');
-      indicator.classList.remove('show');
-      exitBtn.style.display = 'none';
-      renderCards();
-      alert('✅ 已退出管理員模式');
-    }
-
-    document.getElementById('adminBtn').onclick = toggleAdminMode;
-
-    // 初始化
-    renderCards();
-  </script>
-</body>
-</html>
+      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d
