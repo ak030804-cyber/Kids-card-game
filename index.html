@@ -1,188 +1,295 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>翻牌認字遊戲 🎮</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Comic Sans MS','Microsoft JhengHei',cursive,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;overflow-x:hidden}
-.container{max-width:1200px;margin:0 auto}
-header{text-align:center;margin-bottom:30px;color:white;text-shadow:3px 3px 6px rgba(0,0,0,0.3)}
-h1{font-size:clamp(2rem,5vw,3.5rem);margin-bottom:10px;animation:bounce 1s ease-in-out infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.subtitle{font-size:clamp(1rem,2vw,1.5rem);opacity:0.9}
-.controls{display:flex;justify-content:center;gap:15px;margin-bottom:30px;flex-wrap:wrap}
-.btn{padding:15px 30px;font-size:clamp(1rem,2vw,1.3rem);border:none;border-radius:50px;cursor:pointer;font-family:inherit;font-weight:bold;transition:all 0.3s ease;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
-.btn-reset{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white}
-.btn-custom{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:white}
-.btn:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 8px 25px rgba(0,0,0,0.4)}
-.btn:active{transform:translateY(0) scale(1)}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;padding:20px;max-width:1000px;margin:0 auto}
-.card{aspect-ratio:1;perspective:1000px;cursor:pointer;position:relative}
-.card.admin-mode{border:3px dashed #ff6b6b;border-radius:20px}
-.card-inner{position:relative;width:100%;height:100%;transition:transform 0.6s;transform-style:preserve-3d;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-.card.flipped .card-inner{transform:rotateY(180deg)}
-.card-front,.card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:clamp(2rem,5vw,3rem);font-weight:bold;padding:10px;overflow:hidden}
-.card-front{background:linear-gradient(135deg,#ffecd2 0%,#fcb69f 100%);color:#ff6b6b;border:4px solid #ff6b6b}
-.card-front::after{content:'?';font-size:clamp(3rem,8vw,5rem);opacity:0.5}
-.card-back{background:white;transform:rotateY(180deg);border:4px solid #4ecdc4}
-.card-back img{max-width:90%;max-height:90%;object-fit:contain;border-radius:10px}
-.card-back .text-content{color:#4ecdc4;text-align:center;line-height:1.3;font-size:clamp(1.5rem,4vw,2.5rem)}
-.admin-btn{position:fixed;top:20px;left:20px;background:rgba(255,255,255,0.2);border:2px solid white;color:white;width:50px;height:50px;border-radius:50%;cursor:pointer;font-size:1.2rem;z-index:1000;transition:all 0.3s ease}
-.admin-btn:hover{background:rgba(255,255,255,0.4);transform:scale(1.1)}
-.admin-panel{display:none;position:fixed;top:70px;left:20px;background:white;padding:20px;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.3);z-index:999;min-width:300px}
-.admin-panel.active{display:block}
-.admin-panel h3{color:#667eea;margin-bottom:15px;text-align:center}
-.admin-panel button{display:block;width:100%;padding:12px;margin:8px 0;border:none;border-radius:10px;cursor:pointer;font-weight:bold;transition:all 0.3s ease}
-.btn-admin-save{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:white}
-.btn-admin-export{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white}
-.btn-admin-import{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:white}
-.btn-admin-exit{background:#ddd;color:#333}
-.btn-admin-save:hover,.btn-admin-export:hover,.btn-admin-import:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,0,0,0.2)}
-.upload-area{border:2px dashed #ddd;padding:15px;border-radius:10px;text-align:center;margin:10px 0;transition:all 0.3s ease}
-.upload-area.dragover{border-color:#667eea;background:#f0f4ff}
-.upload-btn{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:10px 20px;border:none;border-radius:10px;cursor:pointer;margin:5px 0}
-.upload-btn:hover{opacity:0.9}
-.upload-preview{max-width:100%;max-height:150px;margin:10px 0;border-radius:10px;display:none}
-.upload-loading{display:none;text-align:center;color:#667eea;font-weight:bold;margin:10px 0}
-.upload-loading.show{display:block}
-.card .upload-btn{position:absolute;bottom:10px;right:10px;padding:8px 15px;font-size:0.8rem;z-index:10}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;justify-content:center;align-items:center;padding:20px}
-.modal.active{display:flex}
-.modal-content{background:white;border-radius:30px;padding:30px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-.modal-header{text-align:center;margin-bottom:20px}
-.modal-header h2{color:#667eea;font-size:2rem}
-.form-group{margin-bottom:20px}
-.form-group label{display:block;margin-bottom:8px;color:#333;font-weight:bold;font-size:1.1rem}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px;border:3px solid #ddd;border-radius:15px;font-size:1rem;font-family:inherit;transition:border-color 0.3s}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#667eea}
-.card-preview{width:100px;height:100px;margin:10px auto;border-radius:15px;display:flex;align-items:center;justify-content:center;background:#f0f0f0;border:3px solid #667eea;overflow:hidden}
-.card-preview img{max-width:90%;max-height:90%;object-fit:contain}
-.card-preview .preview-text{font-size:2rem;color:#667eea}
-.card-list{margin-top:20px}
-.card-item{display:flex;align-items:center;gap:15px;padding:15px;background:#f8f9fa;border-radius:15px;margin-bottom:10px}
-.card-item-number{width:40px;height:40px;background:#667eea;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold}
-.card-item-content{flex:1;font-size:1.1rem}
-.card-item-delete{background:#ff6b6b;color:white;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem}
-.modal-footer{display:flex;gap:15px;margin-top:20px;justify-content:center}
-.btn-save{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:white}
-.btn-close{background:#ddd;color:#333}
-.sound-toggle{position:fixed;top:20px;right:20px;background:white;border:none;width:60px;height:60px;border-radius:50%;font-size:1.5rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:100}
-.admin-indicator{display:none;position:fixed;top:20px;right:90px;background:#ff6b6b;color:white;padding:10px 20px;border-radius:20px;font-weight:bold;z-index:999}
-.admin-indicator.show{display:block}
-.confetti{position:fixed;width:10px;height:10px;background:#f00;animation:confetti-fall 3s linear forwards;z-index:9999}
-@keyframes confetti-fall{0%{transform:translateY(-100px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-@media(max-width:600px){.cards-grid{grid-template-columns:repeat(2,1fr);gap:15px;padding:10px}.controls{gap:10px}.btn{padding:12px 20px;font-size:1rem}.admin-panel{left:50%;transform:translateX(-50%);min-width:250px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>翻牌認字遊戲 🎮</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Comic Sans MS', 'Microsoft JhengHei', cursive, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      color: white;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 10px;
+      animation: bounce 1s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .subtitle {
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      opacity: 0.9;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 15px 30px;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .btn-reset {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+    .btn-custom {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+    }
+    .btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      height: 180px;
+      perspective: 1000px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+    }
+    .card-front {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 3rem;
+    }
+    .card-back {
+      background: white;
+      transform: rotateY(180deg);
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #333;
+    }
+    .card-back img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+    .admin-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 1.8rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    .admin-indicator {
+      display: none;
+      position: fixed;
+      top: 90px;
+      left: 20px;
+      background: #ff6b6b;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      z-index: 999;
+    }
+    .admin-indicator.show { display: block; }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+      .card { height: 140px; }
+      .card-front { font-size: 2rem; }
+      .card-back { font-size: 1.8rem; }
+    }
+  </style>
 </head>
 <body>
-<button class="sound-toggle" id="soundToggle">🔊</button>
-<button class="admin-btn" id="adminBtn" title="管理員設定">⚙️</button>
-<div class="admin-indicator" id="adminIndicator">🔧 管理員模式</div>
-<div class="admin-panel" id="adminPanel">
-<h3>⚙️ 管理員設定</h3>
-<button class="btn-admin-save" onclick="saveAllCards()">💾 保存所有設定</button>
-<button class="btn-admin-export" onclick="exportConfig()">📤 導出配置</button>
-<button class="btn-admin-import" onclick="document.getElementById('importFile').click()">📥 導入配置</button>
-<input type="file" id="importFile" accept=".json" style="display:none" onchange="importConfig(this)">
-<button class="btn-admin-exit" onclick="exitAdminMode()">❌ 保存並退出</button>
-</div>
-<div class="container">
-<header><h1>🎯 翻牌認字遊戲 🎯</h1><p class="subtitle">點擊卡片，學習新字詞！</p></header>
-<div class="controls"><button class="btn btn-reset" onclick="resetGame()">🔄 重置遊戲</button><button class="btn btn-custom" onclick="openCustomMode()">✏️ 自定義卡片</button></div>
-<div class="cards-grid" id="cardsGrid"></div>
-</div>
-<div class="modal" id="customModal">
-<div class="modal-content">
-<div class="modal-header"><h2>✏️ 自定義卡片</h2></div>
-<div class="form-group"><label for="cardNumber">選擇卡片編號：</label><select id="cardNumber"><option value="0">卡片 1</option><option value="1">卡片 2</option><option value="2">卡片 3</option><option value="3">卡片 4</option><option value="4">卡片 5</option><option value="5">卡片 6</option><option value="6">卡片 7</option><option value="7">卡片 8</option><option value="8">卡片 9</option><option value="9">卡片 10</option></select></div>
-<div class="form-group"><label for="contentType">內容類型：</label><select id="contentType" onchange="toggleContentType()"><option value="text">文字</option><option value="image">圖片</option></select></div>
-<div class="form-group" id="textGroup"><label for="textContent">文字內容：</label><textarea id="textContent" rows="3" placeholder="輸入要顯示的文字（例如：貓、狗、蘋果...）"></textarea></div>
-<div class="form-group" id="imageGroup" style="display:none;">
-<label for="imageUrl">圖片來源：</label>
-<div class="upload-area" id="uploadArea">
-<p>📁 點擊選擇圖片 或 拖拽圖片到這裡</p>
-<button class="upload-btn" onclick="document.getElementById('imageUpload').click()">選擇圖片</button>
-<input type="file" id="imageUpload" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
-</div>
-<div class="upload-loading" id="uploadLoading">⏳ 處理圖片中...</div>
-<img class="upload-preview" id="uploadPreview" alt="預覽">
-<p style="margin-top:8px;color:#666;font-size:0.9rem">💡 提示：圖片將自動轉換為 Base64 格式儲存，無需後端</p>
-</div>
-<div class="form-group"><label>預覽：</label><div class="card-preview" id="cardPreview"><span class="preview-text">?</span></div></div>
-<div class="card-list" id="cardList"></div>
-<div class="modal-footer"><button class="btn btn-save" onclick="saveCard()">💾 儲存卡片</button><button class="btn btn-close" onclick="closeModal()">❌ 關閉</button></div>
-</div>
-</div>
-<script>
-const defaultConfig={cards:[{type:'text',content:'貓',color:'#FF6B6B'},{type:'text',content:'狗',color:'#4ECDC4'},{type:'text',content:'鳥',color:'#45B7D1'},{type:'text',content:'魚',color:'#96CEB4'},{type:'text',content:'花',color:'#FFEAA7'},{type:'text',content:'樹',color:'#DDA0DD'},{type:'text',content:'日',color:'#FFB6C1'},{type:'text',content:'月',color:'#87CEEB'},{type:'text',content:'星',color:'#F0E68C'},{type:'text',content:'雲',color:'#B0E0E6'}],soundEnabled:true,flipDelay:2000};
-let config=JSON.parse(localStorage.getItem('cardGameConfig'))||defaultConfig;
-let flipTimeouts=[];
-let soundEnabled=config.soundEnabled!==false;
-let adminMode=false;
-const ADMIN_PASSWORD='admin123';
+  <button class="admin-btn" id="adminBtn" title="管理員設定">⚙️</button>
+  <div class="admin-indicator" id="adminIndicator">🔧 管理員模式</div>
 
-function playSound(name){if(soundEnabled){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=name==='flip'?440:660;osc.type='sine';gain.gain.setValueAtTime(0.3,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.3);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3);}catch(e){}}}
+  <div class="container">
+    <header>
+      <h1>🎯 翻牌認字遊戲 🎯</h1>
+      <p class="subtitle">點擊卡片，學習新字詞！</p>
+    </header>
+    <div class="controls">
+      <button class="btn btn-reset" onclick="resetGame()">🔄 重置遊戲</button>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
 
-function createConfetti(){const colors=['#ff6b6b','#4ecdc4','#45b7d1','#ffeaa7','#dda0dd','#f0e68c'];for(let i=0;i<30;i++){const confetti=document.createElement('div');confetti.className='confetti';confetti.style.left=Math.random()*100+'vw';confetti.style.background=colors[Math.floor(Math.random()*colors.length)];confetti.style.animationDuration=(2+Math.random()*2)+'s';document.body.appendChild(confetti);setTimeout(()=>confetti.remove(),4000);}}
-function renderCards(){const grid=document.getElementById('cardsGrid');grid.innerHTML='';config.cards.forEach((card,index)=>{const cardEl=document.createElement('div');cardEl.className='card';if(adminMode)cardEl.classList.add('admin-mode');const content=card.type==='image'?`<img src="${card.content}" alt="卡片${index+1}">`:`<span class="text-content" style="color:${card.color||'#4ecdc4'}">${card.content}</span>`;let html=`<div class="card-inner"><div class="card-front"></div><div class="card-back">${content}</div></div>`;if(adminMode&&card.type==='image'){html+=`<button class="upload-btn" onclick="event.stopPropagation();reuploadCard(${index})">🔄 更換圖片</button>`;}else if(adminMode){html+=`<button class="upload-btn" onclick="event.stopPropagation();uploadCardImage(${index})">📷 上傳圖片</button>`;}cardEl.innerHTML=html;cardEl.onclick=()=>flipCard(cardEl,index);grid.appendChild(cardEl);});}
+  <script>
+    // 配置數據
+    const defaultConfig = {
+      cards: [
+        { type: 'text', content: '貓', color: '#FF6B6B' },
+        { type: 'text', content: '狗', color: '#4ECDC4' },
+        { type: 'text', content: '鳥', color: '#45B7D1' },
+        { type: 'text', content: '魚', color: '#96CEB4' },
+        { type: 'text', content: '花', color: '#FFEAA7' },
+        { type: 'text', content: '樹', color: '#DDA0DD' },
+        { type: 'text', content: '日', color: '#FFB6C1' },
+        { type: 'text', content: '月', color: '#87CEEB' },
+        { type: 'text', content: '星', color: '#F0E68C' },
+        { type: 'text', content: '雲', color: '#B0E0E6' }
+      ],
+      flipDelay: 2000
+    };
 
-function flipCard(cardEl,index){if(cardEl.classList.contains('flipped')||adminMode)return;cardEl.classList.add('flipped');playSound('flip');if(flipTimeouts[index])clearTimeout(flipTimeouts[index]);flipTimeouts[index]=setTimeout(()=>{cardEl.classList.remove('flipped');playSound('success');if(index===config.cards.length-1)createConfetti();},config.flipDelay);}
+    // 初始化配置
+    let config = JSON.parse(localStorage.getItem('cardGameConfig')) || defaultConfig;
+    let flipTimeouts = [];
+    let adminMode = false;
+    const ADMIN_PASSWORD = 'admin123';
 
-function resetGame(){document.querySelectorAll('.card').forEach(c=>c.classList.remove('flipped'));flipTimeouts.forEach(t=>clearTimeout(t));flipTimeouts=[];playSound('flip');}
+    // 渲染卡片
+    function renderCards() {
+      const grid = document.getElementById('cardsGrid');
+      grid.innerHTML = '';
+      
+      config.cards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'card';
+        if (adminMode) cardEl.classList.add('admin-mode');
 
-function openCustomMode(){document.getElementById('customModal').classList.add('active');updateCardList();}
+        let content = '';
+        if (card.type === 'image') {
+          content = `<img src="${card.content}" alt="卡片${index+1}">`;
+        } else {
+          content = `<span style="color: ${card.color || '#4ecdc4'}">${card.content}</span>`;
+        }
 
-function closeModal(){document.getElementById('customModal').classList.remove('active');}
+        cardEl.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">🎴</div>
+            <div class="card-back">${content}</div>
+          </div>
+        `;
 
-function toggleContentType(){const type=document.getElementById('contentType').value;document.getElementById('textGroup').style.display=type==='text'?'block':'none';document.getElementById('imageGroup').style.display=type==='image'?'block':'none';updatePreview();}
+        cardEl.onclick = () => flipCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
 
-function updatePreview(){const type=document.getElementById('contentType').value;const preview=document.getElementById('cardPreview');const cardNum=parseInt(document.getElementById('cardNumber').value);const card=config.cards[cardNum];if(type==='text'){const text=document.getElementById('textContent').value||card?.content||'?';preview.innerHTML=`<span class="preview-text" style="color:${card?.color||'#667eea'}">${text}</span>`;}else{const url=document.getElementById('imageUrl').value||card?.content||'';preview.innerHTML=url?`<img src="${url}" alt="預覽">`:`<span class="preview-text">?</span>`;}}
+    // 翻牌功能
+    function flipCard(cardEl, index) {
+      if (cardEl.classList.contains('flipped')) return;
+      
+      cardEl.classList.add('flipped');
+      
+      if (flipTimeouts[index]) clearTimeout(flipTimeouts[index]);
+      flipTimeouts[index] = setTimeout(() => {
+        cardEl.classList.remove('flipped');
+        if (index === config.cards.length - 1) {
+          createConfetti();
+        }
+      }, config.flipDelay);
+    }
 
-function updateCardList(){const list=document.getElementById('cardList');list.innerHTML='';config.cards.forEach((card,index)=>{const item=document.createElement('div');item.className='card-item';const content=card.type==='image'?`🖼️ 圖片`:`📝 ${card.content}`;item.innerHTML=`<div class="card-item-number">${index+1}</div><div class="card-item-content">${content}</div><button class="card-item-delete" onclick="resetCard(${index})">🗑️</button>`;list.appendChild(item);});}
+    // 重置遊戲
+    function resetGame() {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('flipped'));
+      flipTimeouts.forEach(t => clearTimeout(t));
+      flipTimeouts = [];
+    }
 
-function resetCard(index){config.cards[index]={type:'text',content:'新字詞',color:'#'+Math.floor(Math.random()*16777215).toString(16)};localStorage.setItem('cardGameConfig',JSON.stringify(config));renderCards();updateCardList();playSound('flip');}
+    // 彩帶效果
+    function createConfetti() {
+      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffeaa7', '#dda0dd'];
+      for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = `
+          position: fixed;
+          width: 10px;
+          height: 10px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          left: ${Math.random() * 100}vw;
+          top: -10px;
+          z-index: 9999;
+          animation: confettiFall ${2 + Math.random() * 2}s linear forwards;
+        `;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+      }
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes confettiFall {
+          to {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
 
-function saveCard(){const cardNum=parseInt(document.getElementById('cardNumber').value);const type=document.getElementById('contentType').value;const card={type,color:'#'+Math.floor(Math.random()*16777215).toString(16)};if(type==='text'){card.content=document.getElementById('textContent').value||'新字詞';}else{card.content=document.getElementById('imageUrl').value||'image.jpg';}config.cards[cardNum]=card;localStorage.setItem('cardGameConfig',JSON.stringify(config));renderCards();updateCardList();closeModal();playSound('success');createConfetti();}
+    // 管理員功能
+    document.getElementById('adminBtn').onclick = function() {
+      const password = prompt('請輸入管理員密碼：');
+      if (password === ADMIN_PASSWORD) {
+        adminMode = !adminMode;
+        const indicator = document.getElementById('adminIndicator');
+        indicator.classList.toggle('show', adminMode);
+        renderCards();
+        alert(adminMode ? '✅ 進入管理員模式' : '✅ 退出管理員模式');
+      } else if (password !== null) {
+        alert('❌ 密碼錯誤！');
+      }
+    };
 
-// Admin mode functions
-function checkAdminPassword(){const password=prompt('請輸入管理員密碼：');if(password===ADMIN_PASSWORD){enterAdminMode();return true;}else if(password!==null){alert('密碼錯誤！');}return false;}
-
-function enterAdminMode(){adminMode=true;document.getElementById('adminPanel').classList.add('active');document.getElementById('adminIndicator').classList.add('show');renderCards();}
-
-function exitAdminMode(){adminMode=false;document.getElementById('adminPanel').classList.remove('active');document.getElementById('adminIndicator').classList.remove('show');saveAllCards();renderCards();}
-
-function saveAllCards(){localStorage.setItem('cardGameConfig',JSON.stringify(config));alert('✅ 所有設定已保存！');}
-
-function exportConfig(){const dataStr=JSON.stringify(config,null,2);const blob=new Blob([dataStr],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='config.json';a.click();URL.revokeObjectURL(url);}
-
-function importConfig(input){const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){try{const importedConfig=JSON.parse(e.target.result);if(importedConfig.cards&&Array.isArray(importedConfig.cards)){config=importedConfig;localStorage.setItem('cardGameConfig',JSON.stringify(config));renderCards();alert('✅ 配置導入成功！');}else{alert('❌ 無效的配置文件格式');}}catch(err){alert('❌ 解析配置文件失敗：'+err.message);}};reader.readAsText(file);}
-
-function uploadCardImage(index){const cardEl=document.querySelectorAll('.card')[index];const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=function(e){handleFileSelect(e.target.files[0],index);};input.click();}
-
-function reuploadCard(index){uploadCardImage(index);}
-
-function handleFileSelect(file,index){if(!file||!file.type.startsWith('image/')){alert('請選擇有效的圖片文件');return;}showUploadLoading();const reader=new FileReader();reader.onload=function(e){const base64=e.target.result;config.cards[index]={type:'image',content:base64,color:'#'+Math.floor(Math.random()*16777215).toString(16)};localStorage.setItem('cardGameConfig',JSON.stringify(config));renderCards();hideUploadLoading();playSound('success');createConfetti();};reader.readAsDataURL(file);}
-
-function showUploadLoading(){document.getElementById('uploadLoading').classList.add('show');}
-
-function hideUploadLoading(){document.getElementById('uploadLoading').classList.remove('show');}
-
-function handleImageUpload(event){const file=event.target.files[0];if(!file||!file.type.startsWith('image/')){alert('請選擇有效的圖片文件');return;}showUploadLoading();const reader=new FileReader();reader.onload=function(e){const base64=e.target.result;const preview=document.getElementById('uploadPreview');preview.src=base64;preview.style.display='block';document.getElementById('imageUrl').value=base64;updatePreview();hideUploadLoading();};reader.readAsDataURL(file);}
-
-// Drag and drop support
-const uploadArea=document.getElementById('uploadArea');if(uploadArea){uploadArea.addEventListener('dragover',function(e){e.preventDefault();this.classList.add('dragover');});uploadArea.addEventListener('dragleave',function(e){e.preventDefault();this.classList.remove('dragover');});uploadArea.addEventListener('drop',function(e){e.preventDefault();this.classList.remove('dragover');const file=e.dataTransfer.files[0];if(file&&file.type.startsWith('image/')){const input=document.getElementById('imageUpload');input.files=e.dataTransfer.files;handleImageUpload({target:{files:e.dataTransfer.files}});}});}
-
-document.getElementById('soundToggle').onclick=function(){soundEnabled=!soundEnabled;this.textContent=soundEnabled?'🔊':'🔇';};
-
-document.getElementById('textContent').oninput=updatePreview;
-document.getElementById('imageUrl').oninput=updatePreview;
-document.getElementById('cardNumber').onchange=function(){const val=parseInt(document.getElementById('cardNumber').value);document.getElementById('contentType').value=config.cards[val]?.type||'text';document.getElementById('textContent').value=config.cards[val]?.type==='text'?config.cards[val].content:'';document.getElementById('imageUrl').value=config.cards[val]?.type==='image'?config.cards[val].content:'';toggleContentType();};
-
-document.getElementById('adminBtn').onclick=function(){checkAdminPassword();};
-
-renderCards();
-</script>
+    // 初始化
+    renderCards();
+  </script>
 </body>
 </html>
