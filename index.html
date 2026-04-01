@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>翻牌認字遊戲 🎮</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Comic Sans MS','Microsoft JhengHei',cursive,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;overflow-x:hidden}.container{max-width:1200px;margin:0 auto}header{text-align:center;margin-bottom:30px;color:white;text-shadow:3px 3px 6px rgba(0,0,0,0.3)}h1{font-size:clamp(2rem,5vw,3.5rem);margin-bottom:10px;animation:bounce 1s ease-in-out infinite}@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}.subtitle{font-size:clamp(1rem,2vw,1.5rem);opacity:0.9}.controls{display:flex;justify-content:center;gap:15px;margin-bottom:30px;flex-wrap:wrap}.btn{padding:15px 30px;font-size:clamp(1rem,2vw,1.3rem);border:none;border-radius:50px;cursor:pointer;font-family:inherit;font-weight:bold;transition:all 0.3s ease;box-shadow:0 6px 20px rgba(0,0,0,0.3)}.btn-reset{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white}.btn-custom{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:white}.btn:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 8px 25px rgba(0,0,0,0.4)}.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;padding:20px;max-width:1000px;margin:0 auto}.card{background:white;border-radius:20px;height:180px;perspective:1000px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,0.2);position:relative;overflow:hidden;transition:all 0.3s}.card.admin-mode{border:3px dashed #ff6b6b}.card-inner{position:relative;width:100%;height:100%;transition:transform 0.6s;transform-style:preserve-3d}.card.flipped .card-inner{transform:rotateY(180deg)}.card-front,.card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:20px}.card-front{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-size:3rem}.card-back{background:white;transform:rotateY(180deg);font-size:2.5rem;font-weight:bold;color:#333}.card-back img{max-width:90%;max-height:90%;border-radius:10px}.admin-btn{position:fixed;top:20px;left:20px;background:white;border:none;width:60px;height:60px;border-radius:50%;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:1000}.admin-indicator{display:none;position:fixed;top:90px;left:20px;background:#ff6b6b;color:white;padding:10px 20px;border-radius:20px;font-weight:bold;z-index:999}.admin-indicator.show{display:block}.upload-btn{position:absolute;bottom:10px;right:10px;background:#4facfe;color:white;border:none;padding:8px 15px;border-radius:20px;font-size:0.9rem;cursor:pointer;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.2)}.upload-btn:hover{background:#00f2fe}.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000;justify-content:center;align-items:center}.modal.active{display:flex}.modal-content{background:white;border-radius:20px;padding:30px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto}.modal-header{text-align:center;margin-bottom:20px}.modal-header h2{color:#667eea;font-size:1.8rem}.form-group{margin-bottom:15px}.form-group label{display:block;margin-bottom:5px;font-weight:bold;color:#333}.form-group select,.form-group input,.form-group textarea{width:100%;padding:10px;border:2px solid #ddd;border-radius:10px;font-size:1rem;font-family:inherit}.color-picker{display:flex;gap:10px;flex-wrap:wrap;margin-top:5px}.color-option{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent}.color-option.selected{border-color:#333;transform:scale(1.1)}.card-preview{background:#f5f5f5;border-radius:10px;padding:20px;text-align:center;min-height:100px;display:flex;align-items:center;justify-content:center}.card-preview img{max-width:100%;max-height:100px}.preview-text{font-size:2rem;font-weight:bold}.modal-footer{display:flex;gap:10px;margin-top:20px}.btn-save{background:linear-gradient(135deg,#4ecdc4 0%,#44a08d 100%);color:white;flex:1}.btn-close{background:linear-gradient(135deg,#ff6b6b 0%,#ee5a6f 100%);color:white;flex:1}@media(max-width:600px){.cards-grid{grid-template-columns:repeat(2,1fr);gap:15px}.card{height:140px}.card-front{font-size:2rem}.card-back{font-size:1.8rem}.modal-content{padding:20px}}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Comic Sans MS','Microsoft JhengHei',cursive,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}.container{max-width:1200px;margin:0 auto}header{text-align:center;margin-bottom:30px;color:white}h1{font-size:2.5rem;margin-bottom:10px}.subtitle{font-size:1.2rem;opacity:0.9}.controls{display:flex;justify-content:center;gap:15px;margin-bottom:30px}.btn{padding:15px 30px;border:none;border-radius:50px;cursor:pointer;font-weight:bold;box-shadow:0 6px 20px rgba(0,0,0,0.3)}.btn-reset{background:linear-gradient(135deg,#f093fb,#f5576c);color:white}.btn-custom{background:linear-gradient(135deg,#4facfe,#00f2fe);color:white}.btn:hover{transform:translateY(-3px)}.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;padding:20px;max-width:1000px;margin:0 auto}.card{background:white;border-radius:20px;height:180px;perspective:1000px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,0.2);position:relative}.card-inner{position:relative;width:100%;height:100%;transition:transform 0.6s;transform-style:preserve-3d}.card.flipped .card-inner{transform:rotateY(180deg)}.card-front,.card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:20px}.card-front{background:linear-gradient(135deg,#667eea,#764ba2);color:white;font-size:3rem}.card-back{background:white;transform:rotateY(180deg);font-size:2.5rem;font-weight:bold;color:#333}.card-back img{max-width:90%;max-height:90%}.admin-btn{position:fixed;top:20px;left:20px;background:white;border:none;width:60px;height:60px;border-radius:50%;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:1000}.admin-indicator{display:none;position:fixed;top:90px;left:20px;background:#ff6b6b;color:white;padding:10px 20px;border-radius:20px;font-weight:bold;z-index:999}.admin-indicator.show{display:block}.upload-btn{position:absolute;bottom:10px;right:10px;background:#4facfe;color:white;border:none;padding:8px 15px;border-radius:20px;font-size:0.9rem;cursor:pointer;z-index:10}.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000;justify-content:center;align-items:center}.modal.active{display:flex}.modal-content{background:white;border-radius:20px;padding:30px;max-width:500px;width:90%}.modal-header{text-align:center;margin-bottom:20px}.modal-header h2{color:#667eea}.form-group{margin-bottom:15px}.form-group label{display:block;margin-bottom:5px;font-weight:bold}.form-group select,.form-group input,.form-group textarea{width:100%;padding:10px;border:2px solid #ddd;border-radius:10px}.color-picker{display:flex;gap:10px;flex-wrap:wrap;margin-top:5px}.color-option{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent}.color-option.selected{border-color:#333}.card-preview{background:#f5f5f5;border-radius:10px;padding:20px;text-align:center;min-height:100px;display:flex;align-items:center;justify-content:center}.modal-footer{display:flex;gap:10px;margin-top:20px}.btn-save{background:linear-gradient(135deg,#4ecdc4,#44a08d);color:white;flex:1}.btn-close{background:linear-gradient(135deg,#ff6b6b,#ee5a6f);color:white;flex:1}
 </style>
 </head>
 <body>
-<button class="admin-btn" id="adminBtn" title="管理員設定">⚙️</button>
+<button class="admin-btn" id="adminBtn">⚙️</button>
 <div class="admin-indicator" id="adminIndicator">🔧 管理員模式</div>
 <div class="container">
 <header><h1>🎯 翻牌認字遊戲 🎯</h1><p class="subtitle">點擊卡片，學習新字詞！</p></header>
 <div class="controls">
 <button class="btn btn-reset" onclick="resetGame()">🔄 重置遊戲</button>
 <button class="btn btn-custom" onclick="openCustomMode()">✏️ 自定義卡片</button>
-<button class="btn" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white;display:none" id="exitBtn" onclick="exitAdminMode()">❌ 退出管理員</button>
+<button class="btn" style="background:linear-gradient(135deg,#f093fb,#f5576c);color:white;display:none" id="exitBtn" onclick="exitAdminMode()">❌ 退出管理員</button>
 </div>
 <div class="cards-grid" id="cardsGrid"></div>
 </div>
@@ -27,182 +27,36 @@
 <div class="form-group"><label>類型：</label><select id="contentType" onchange="toggleContentType()"><option value="text">文字</option><option value="image">圖片</option></select></div>
 <div class="form-group" id="textGroup"><label>文字內容：</label><textarea id="textContent" rows="3" oninput="updatePreview()"></textarea><label style="margin-top:10px">顏色：</label><div class="color-picker" id="colorPicker"></div></div>
 <div class="form-group" id="imageGroup" style="display:none"><label>選擇圖片：</label><input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)"></div>
-<div class="form-group"><label>預覽：</label><div class="card-preview" id="cardPreview"><span class="preview-text">?</span></div></div>
+<div class="form-group"><label>預覽：</label><div class="card-preview" id="cardPreview"><span>?</span></div></div>
 <div class="modal-footer"><button class="btn btn-save" onclick="saveCard()">💾 儲存</button><button class="btn btn-close" onclick="closeModal()">❌ 關閉</button></div>
 </div>
 </div>
 <script>
-window.addEventListener('DOMContentLoaded', function() {
-  const defaultConfig = {
-    cards: [
-      { type: 'text', content: '貓', color: '#FF6B6B' },
-      { type: 'text', content: '狗', color: '#4ECDC4' },
-      { type: 'text', content: '鳥', color: '#45B7D1' },
-      { type: 'text', content: '魚', color: '#96CEB4' },
-      { type: 'text', content: '花', color: '#FFEAA7' },
-      { type: 'text', content: '樹', color: '#DDA0DD' },
-      { type: 'text', content: '日', color: '#FFB6C1' },
-      { type: 'text', content: '月', color: '#87CEEB' },
-      { type: 'text', content: '星', color: '#F0E68C' },
-      { type: 'text', content: '雲', color: '#B0E0E6' }
-    ],
-    flipDelay: 2000
-  };
-
-  let config = JSON.parse(localStorage.getItem('cardGameConfig')) || defaultConfig;
-  let flipTimeouts = [];
-  let adminMode = false;
-  const ADMIN_PASSWORD = 'admin123';
-  let currentCardIndex = 0;
-  const colors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#FFB6C1','#87CEEB','#F0E68C','#B0E0E6','#FF5733','#33FF57','#3357FF','#FF33F6','#33FFF6'];
-
-  function initColorPicker() {
-    const p = document.getElementById('colorPicker');
-    if (!p) return;
-    p.innerHTML = '';
-    colors.forEach(c => {
-      const o = document.createElement('div');
-      o.className = 'color-option';
-      o.style.backgroundColor = c;
-      o.onclick = () => {
-        document.querySelectorAll('.color-option').forEach(x => x.classList.remove('selected'));
-        o.classList.add('selected');
-        updatePreview();
-      };
-      p.appendChild(o);
-    });
-  }
-
-  function renderCards() {
-    const g = document.getElementById('cardsGrid');
-    if (!g) {
-      console.error('cardsGrid not found!');
-      return;
-    }
-    g.innerHTML = '';
-    config.cards.forEach((card, i) => {
-      const el = document.createElement('div');
-      el.className = 'card';
-      if (adminMode) el.classList.add('admin-mode');
-      let content = '';
-      if (card.type === 'image') {
-        content = '<img src="' + card.content + '" alt="card">';
-      } else {
-        content = '<span style="color:' + (card.color || '#4ecdc4') + '">' + card.content + '</span>';
-      }
-      let html = '<div class="card-inner"><div class="card-front">🎴</div><div class="card-back">' + content + '</div></div>';
-      if (adminMode) {
-        html += '<button class="upload-btn" onclick="event.stopPropagation();uploadCardImage(' + i + ')">' + (card.type === 'image' ? '🔄更換' : '📷上傳') + '</button>';
-      }
-      el.innerHTML = html;
-      el.onclick = () => flipCard(el, i);
-      g.appendChild(el);
-    });
-    console.log('Cards rendered:', config.cards.length);
-  }
-
-  function flipCard(el, i) {
-    if (el.classList.contains('flipped') || adminMode) return;
-    el.classList.add('flipped');
-    if (flipTimeouts[i]) clearTimeout(flipTimeouts[i]);
-    flipTimeouts[i] = setTimeout(() => {
-      el.classList.remove('flipped');
-      if (i === config.cards.length - 1) createConfetti();
-    }, config.flipDelay);
-  }
-
-  function resetGame() {
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('flipped'));
-    flipTimeouts.forEach(t => clearTimeout(t));
-    flipTimeouts = [];
-  }
-
-  function createConfetti() {
-    const confettiColors = ['#ff6b6b','#4ecdc4','#45b7d1','#ffeaa7','#dda0dd'];
-    for (let i = 0; i < 30; i++) {
-      const c = document.createElement('div');
-      c.style.cssText = 'position:fixed;width:10px;height:10px;background:' + confettiColors[Math.floor(Math.random() * confettiColors.length)] + ';left:' + (Math.random() * 100) + 'vw;top:-10px;z-index:9999;animation:cf ' + (2 + Math.random() * 2) + 's linear forwards';
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 4000);
-    }
-    const s = document.createElement('style');
-    s.textContent = '@keyframes cf{to{transform:translateY(100vh) rotate(720deg);opacity:0}}';
-    document.head.appendChild(s);
-  }
-
-  function uploadCardImage(i) {
-    const inp = document.createElement('input');
-    inp.type = 'file';
-    inp.accept = 'image/*';
-    inp.onchange = e => {
-      const f = e.target.files[0];
-      if (!f || !f.type.startsWith('image/')) return;
-      const r = new FileReader();
-      r.onload = ev => {
-        config.cards[i] = { type: 'image', content: ev.target.result, color: config.cards[i]?.color || '#4ecdc4' };
-        localStorage.setItem('cardGameConfig', JSON.stringify(config));
-        renderCards();
-        alert('✅ 圖片已上傳！');
-      };
-      r.readAsDataURL(f);
-    };
-    inp.click();
-  }
-
-  function toggleAdminMode() {
-    const pw = prompt('請輸入管理員密碼：');
-    if (pw === ADMIN_PASSWORD) {
-      adminMode = !adminMode;
-      const ind = document.getElementById('adminIndicator');
-      const btn = document.getElementById('exitBtn');
-      if (adminMode) {
-        ind.classList.add('show');
-        btn.style.display = 'inline-block';
-        alert('✅ 進入管理員模式\n💡 點擊卡片上的按鈕上傳圖片');
-      } else {
-        ind.classList.remove('show');
-        btn.style.display = 'none';
-        alert('✅ 退出管理員模式');
-      }
-      renderCards();
-    } else if (pw !== null) {
-      alert('❌ 密碼錯誤！');
-    }
-  }
-
-  function exitAdminMode() {
-    adminMode = false;
-    document.getElementById('adminIndicator').classList.remove('show');
-    document.getElementById('exitBtn').style.display = 'none';
-    renderCards();
-    alert('✅ 已退出管理員模式');
-  }
-
-  function openCustomMode() {
-    document.getElementById('customModal').classList.add('active');
-    const sel = document.getElementById('cardNumber');
-    sel.innerHTML = '';
-    config.cards.forEach((_, i) => {
-      const o = document.createElement('option');
-      o.value = i;
-      o.textContent = '卡片 ' + (i + 1);
-      sel.appendChild(o);
-    });
-    initColorPicker();
-    loadCardData();
-  }
-
-  function closeModal() {
-    document.getElementById('customModal').classList.remove('active');
-  }
-
-  function loadCardData() {
-    const i = parseInt(document.getElementById('cardNumber').value);
-    currentCardIndex = i;
-    const card = config.cards[i];
-    document.getElementById('contentType').value = card.type || 'text';
-    toggleContentType();
-    if (card.type === 'text') {
-      document.getElementById('textContent').value = card.content || '';
-      const color = card.color || '#4ecdc4';
-      document.querySelectorAll('.color-option').forEach
+(function(){
+const defaultConfig={cards:[{type:'text',content:'貓',color:'#FF6B6B'},{type:'text',content:'狗',color:'#4ECDC4'},{type:'text',content:'鳥',color:'#45B7D1'},{type:'text',content:'魚',color:'#96CEB4'},{type:'text',content:'花',color:'#FFEAA7'},{type:'text',content:'樹',color:'#DDA0DD'},{type:'text',content:'日',color:'#FFB6C1'},{type:'text',content:'月',color:'#87CEEB'},{type:'text',content:'星',color:'#F0E68C'},{type:'text',content:'雲',color:'#B0E0E6'}],flipDelay:2000};
+let config=JSON.parse(localStorage.getItem('cardGameConfig'))||defaultConfig;
+let flipTimeouts=[];
+let adminMode=false;
+const ADMIN_PASSWORD='admin123';
+const colors=['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#FFB6C1','#87CEEB','#F0E68C','#B0E0E6'];
+function renderCards(){var g=document.getElementById('cardsGrid');if(!g)return;g.innerHTML='';config.cards.forEach(function(card,i){var el=document.createElement('div');el.className='card';if(adminMode)el.classList.add('admin-mode');var content=card.type==='image'?'<img src="'+card.content+'">':'<span style="color:'+(card.color||'#4ecdc4')+'">'+card.content+'</span>';var html='<div class="card-inner"><div class="card-front">🎴</div><div class="card-back">'+content+'</div></div>';if(adminMode)html+='<button class="upload-btn" onclick="event.stopPropagation();uploadCardImage('+i+')">'+(card.type==='image'?'🔄更換':'📷上傳')+'</button>';el.innerHTML=html;el.onclick=function(){flipCard(el,i)};g.appendChild(el)});console.log('Rendered '+config.cards.length+' cards');}
+function flipCard(el,i){if(el.classList.contains('flipped')||adminMode)return;el.classList.add('flipped');if(flipTimeouts[i])clearTimeout(flipTimeouts[i]);flipTimeouts[i]=setTimeout(function(){el.classList.remove('flipped');if(i===config.cards.length-1)createConfetti()},config.flipDelay);}
+function resetGame(){document.querySelectorAll('.card').forEach(function(c){c.classList.remove('flipped')});flipTimeouts.forEach(function(t){clearTimeout(t)});flipTimeouts=[];}
+function createConfetti(){var colors=['#ff6b6b','#4ecdc4','#45b7d1','#ffeaa7','#dda0dd'];for(var i=0;i<30;i++){var c=document.createElement('div');c.style.cssText='position:fixed;width:10px;height:10px;background:'+colors[Math.floor(Math.random()*colors.length)]+';left:'+Math.random()*100+'vw;top:-10px;z-index:9999;animation:cf '+(2+Math.random()*2)+'s linear forwards';document.body.appendChild(c);setTimeout(function(){c.remove()},4000)}var s=document.createElement('style');s.textContent='@keyframes cf{to{transform:translateY(100vh) rotate(720deg);opacity:0}}';document.head.appendChild(s);}
+function uploadCardImage(i){var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=function(e){var f=e.target.files[0];if(!f||!f.type.startsWith('image/'))return;var r=new FileReader();r.onload=function(ev){config.cards[i]={type:'image',content:ev.target.result,color:config.cards[i].color||'#4ecdc4'};localStorage.setItem('cardGameConfig',JSON.stringify(config));renderCards();alert('✅ 圖片已上傳！')};r.readAsDataURL(f)};inp.click();}
+function toggleAdminMode(){var pw=prompt('請輸入管理員密碼：');if(pw===ADMIN_PASSWORD){adminMode=!adminMode;var ind=document.getElementById('adminIndicator');var btn=document.getElementById('exitBtn');if(adminMode){ind.classList.add('show');btn.style.display='inline-block';alert('✅ 進入管理員模式\n💡 點擊卡片上的按鈕上傳圖片')}else{ind.classList.remove('show');btn.style.display='none';alert('✅ 退出管理員模式')}renderCards()}else if(pw!==null)alert('❌ 密碼錯誤！')}
+function exitAdminMode(){adminMode=false;document.getElementById('adminIndicator').classList.remove('show');document.getElementById('exitBtn').style.display='none';renderCards();alert('✅ 已退出管理員模式')}
+function openCustomMode(){document.getElementById('customModal').classList.add('active');var sel=document.getElementById('cardNumber');sel.innerHTML='';config.cards.forEach(function(_,i){var o=document.createElement('option');o.value=i;o.textContent='卡片 '+(i+1);sel.appendChild(o)});initColorPicker();loadCardData()}
+function closeModal(){document.getElementById('customModal').classList.remove('active')}
+function initColorPicker(){var p=document.getElementById('colorPicker');if(!p)return;p.innerHTML='';colors.forEach(function(c){var o=document.createElement('div');o.className='color-option';o.style.backgroundColor=c;o.onclick=function(){document.querySelectorAll('.color-option').forEach(function(x){x.classList.remove('selected')});o.classList.add('selected');updatePreview()};p.appendChild(o)})}
+function loadCardData(){var i=parseInt(document.getElementById('cardNumber').value);var card=config.cards[i];document.getElementById('contentType').value=card.type||'text';toggleContentType();if(card.type==='text'){document.getElementById('textContent').value=card.content||'';var color=card.color||'#4ecdc4';document.querySelectorAll('.color-option').forEach(function(opt,idx){if(colors[idx]===color)opt.classList.add('selected');else opt.classList.remove('selected')});updatePreview()}else{document.getElementById('imageUpload').value='';var prevImg=document.querySelector('#cardPreview img');if(prevImg)document.getElementById('cardPreview').innerHTML='<img src="'+card.content+'">';else document.getElementById('cardPreview').innerHTML='<span>?</span>'}}
+function toggleContentType(){var type=document.getElementById('contentType').value;document.getElementById('textGroup').style.display=type==='text'?'block':'none';document.getElementById('imageGroup').style.display=type==='image'?'block':'none';updatePreview()}
+function updatePreview(){var type=document.getElementById('contentType').value;var prev=document.getElementById('cardPreview');if(type==='text'){var txt=document.getElementById('textContent').value||'?';var sel=document.querySelector('.color-option.selected');var color=sel?sel.style.backgroundColor:'#4ecdc4';prev.innerHTML='<span style="color:'+color+';font-size:2rem;font-weight:bold">'+txt+'</span>';}else{var prevImg=document.querySelector('#cardPreview img');if(prevImg&&prevImg.src)prev.innerHTML='<img src="'+prevImg.src+'">';else prev.innerHTML='<span>?</span>'}}
+function handleImageUpload(e){var f=e.target.files[0];if(!f||!f.type.startsWith('image/'))return;var r=new FileReader();r.onload=function(ev){document.getElementById('cardPreview').innerHTML='<img src="'+ev.target.result+'">';updatePreview()};r.readAsDataURL(f)}
+function saveCard(){var i=parseInt(document.getElementById('cardNumber').value);var type=document.getElementById('contentType').value;var card={type,color:'#4ecdc4'};if(type==='text'){card.content=document.getElementById('textContent').value||'新字詞';var sel=document.querySelector('.color-option.selected');if(sel)card.color=sel.style.backgroundColor;}else{var prevImg=document.querySelector('#cardPreview img');if(prevImg&&prevImg.src)card.content=prevImg.src;else{alert('請先選擇圖片！');return}}config.cards[i]=card;localStorage.setItem('cardGameConfig',JSON.stringify(config));renderCards();closeModal();alert('✅ 已儲存！');createConfetti()}
+document.getElementById('adminBtn').onclick=toggleAdminMode;
+renderCards();
+})();
+</script>
+</body>
+</html>
