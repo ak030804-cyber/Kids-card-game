@@ -1,0 +1,56 @@
+{
+  "cards": [
+    {
+      "type": "text",
+      "content": "貓",
+      "color": "#FF6B6B"
+    },
+    {
+      "type": "text",
+      "content": "狗",
+      "color": "#4ECDC4"
+    },
+    {
+      "type": "text",
+      "content": "鳥",
+      "color": "#45B7D1"
+    },
+    {
+      "type": "text",
+      "content": "魚",
+      "color": "#96CEB4"
+    },
+    {
+      "type": "text",
+      "content": "花",
+      "color": "#FFEAA7"
+    },
+    {
+      "type": "text",
+      "content": "樹",
+      "color": "#DDA0DD"
+    },
+    {
+      "type": "text",
+      "content": "日",
+      "color": "#FFB6C1"
+    },
+    {
+      "type": "text",
+      "content": "月",
+      "color": "#87CEEB"
+    },
+    {
+      "type": "text",
+      "content": "星",
+      "color": "#F0E68C"
+    },
+    {
+      "type": "text",
+      "content": "雲",
+      "color": "#B0E0E6"
+    }
+  ],
+  "soundEnabled": true,
+  "flipDelay": 2000
+}
