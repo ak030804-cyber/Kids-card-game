@@ -9,7 +9,7 @@
 </style>
 </head>
 <body>
-<button class="admin-btn" id="adminBtn">⚙️</button>
+<button class="admin-btn" id="adminBtn" title="管理員設定">⚙️</button>
 <div class="admin-indicator" id="adminIndicator">🔧 管理員模式</div>
 <div class="container">
 <header><h1>🎯 翻牌認字遊戲 🎯</h1><p class="subtitle">點擊卡片，學習新字詞！</p></header>
@@ -116,7 +116,7 @@ function toggleAdminMode(){
     adminMode=!adminMode;
     var ind=document.getElementById('adminIndicator');
     var btn=document.getElementById('btnExit');
-    if(adminMode){ind.classList.add('show');btn.style.display='inline-block';alert('✅ 進入管理員模式\n💡 點擊卡片上的按鈕上傳背面圖片')}
+    if(adminMode){ind.classList.add('show');btn.style.display='inline-block';alert('✅ 進入管理員模式\n💡 點擊卡片上的按鈕直接上傳背面圖片')}
     else{ind.classList.remove('show');btn.style.display='none';alert('✅ 退出管理員模式')}
     renderCards();
   }else if(pw!==null){alert('❌ 密碼錯誤！');}
@@ -235,12 +235,10 @@ function saveCard(){
   var type=document.getElementById('contentType').value;
   var card={type,color:'#4ecdc4',front:null};
   
-  // 處理正面圖片
   if(frontFile&&frontFile.type.startsWith('image/')){
     var r=new FileReader();
     r.onload=function(ev){
       card.front=ev.target.result;
-      // 處理背面內容
       if(type==='text'){
         card.content=document.getElementById('textContent').value||'新字詞';
         var sel=document.querySelector('.color-option.selected');
@@ -254,12 +252,11 @@ function saveCard(){
       localStorage.setItem('cardGameConfig',JSON.stringify(config));
       renderCards();
       closeModal();
-      alert('✅ 已儲存！正面和背面圖片都已更新');
+      alert('✅ 已儲存！');
       createConfetti();
     };
     r.readAsDataURL(frontFile);
   }else{
-    // 沒有正面圖片，使用預設
     if(type==='text'){
       card.content=document.getElementById('textContent').value||'新字詞';
       var sel=document.querySelector('.color-option.selected');
