@@ -55,10 +55,6 @@
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
       color: white;
     }
-    .btn-custom {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      color: white;
-    }
     .btn:hover {
       transform: translateY(-3px) scale(1.05);
       box-shadow: 0 8px 25px rgba(0,0,0,0.4);
@@ -80,6 +76,10 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       position: relative;
       overflow: hidden;
+      transition: all 0.3s;
+    }
+    .card.admin-mode {
+      border: 3px dashed #ff6b6b;
     }
     .card-inner {
       position: relative;
@@ -145,6 +145,23 @@
       z-index: 999;
     }
     .admin-indicator.show { display: block; }
+    .upload-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #4facfe;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .upload-btn:hover {
+      background: #00f2fe;
+    }
     @media (max-width: 600px) {
       .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
       .card { height: 140px; }
@@ -164,6 +181,7 @@
     </header>
     <div class="controls">
       <button class="btn btn-reset" onclick="resetGame()">🔄 重置遊戲</button>
+      <button class="btn" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white" onclick="exitAdminMode()" id="exitBtn" style="display:none">❌ 退出管理員</button>
     </div>
     <div class="cards-grid" id="cardsGrid"></div>
   </div>
@@ -209,13 +227,21 @@
           content = `<span style="color: ${card.color || '#4ecdc4'}">${card.content}</span>`;
         }
 
-        cardEl.innerHTML = `
+        let html = `
           <div class="card-inner">
             <div class="card-front">🎴</div>
             <div class="card-back">${content}</div>
           </div>
         `;
 
+        // 管理員模式下添加上傳按鈕
+        if (adminMode) {
+          html += `<button class="upload-btn" onclick="event.stopPropagation(); uploadCardImage(${index})">
+            ${card.type === 'image' ? '🔄 更換圖片' : '📷 上傳圖片'}
+          </button>`;
+        }
+
+        cardEl.innerHTML = html;
         cardEl.onclick = () => flipCard(cardEl, index);
         grid.appendChild(cardEl);
       });
@@ -223,7 +249,7 @@
 
     // 翻牌功能
     function flipCard(cardEl, index) {
-      if (cardEl.classList.contains('flipped')) return;
+      if (cardEl.classList.contains('flipped') || adminMode) return;
       
       cardEl.classList.add('flipped');
       
@@ -274,19 +300,69 @@
       document.head.appendChild(style);
     }
 
+    // 上傳圖片功能
+    function uploadCardImage(index) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith('image/')) {
+          alert('請選擇有效的圖片文件');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64 = event.target.result;
+          config.cards[index] = {
+            type: 'image',
+            content: base64,
+            color: config.cards[index]?.color || '#4ecdc4'
+          };
+          localStorage.setItem('cardGameConfig', JSON.stringify(config));
+          renderCards();
+          alert('✅ 圖片已上傳！');
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    }
+
     // 管理員功能
-    document.getElementById('adminBtn').onclick = function() {
+    function toggleAdminMode() {
       const password = prompt('請輸入管理員密碼：');
       if (password === ADMIN_PASSWORD) {
         adminMode = !adminMode;
         const indicator = document.getElementById('adminIndicator');
-        indicator.classList.toggle('show', adminMode);
+        const exitBtn = document.getElementById('exitBtn');
+        
+        if (adminMode) {
+          indicator.classList.add('show');
+          exitBtn.style.display = 'inline-block';
+          alert('✅ 進入管理員模式\n💡 點擊卡片上的「📷 上傳圖片」按鈕更換圖片');
+        } else {
+          indicator.classList.remove('show');
+          exitBtn.style.display = 'none';
+          alert('✅ 退出管理員模式');
+        }
         renderCards();
-        alert(adminMode ? '✅ 進入管理員模式' : '✅ 退出管理員模式');
       } else if (password !== null) {
         alert('❌ 密碼錯誤！');
       }
-    };
+    }
+
+    function exitAdminMode() {
+      adminMode = false;
+      const indicator = document.getElementById('adminIndicator');
+      const exitBtn = document.getElementById('exitBtn');
+      indicator.classList.remove('show');
+      exitBtn.style.display = 'none';
+      renderCards();
+      alert('✅ 已退出管理員模式');
+    }
+
+    document.getElementById('adminBtn').onclick = toggleAdminMode;
 
     // 初始化
     renderCards();
