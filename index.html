@@ -98,14 +98,23 @@ function uploadCardImage(i){
   inp.onchange=function(e){
     var f=e.target.files[0];
     if(!f||!f.type.startsWith('image/')){alert('請選擇有效的圖片文件');return}
-    var r=new FileReader();
-    r.onload=function(ev){
-      config.cards[i]={type:'image',content:ev.target.result,color:config.cards[i].color||'#4ecdc4',front:config.cards[i].front||null};
+    // 壓縮圖片
+    var img=new Image();
+    img.onload=function(){
+      var canvas=document.createElement('canvas');
+      var ctx=canvas.getContext('2d');
+      var maxSize=300;
+      var w=img.width,h=img.height;
+      if(w>h){if(w>maxSize){h*=maxSize/w;w=maxSize}}else{if(h>maxSize){w*=maxSize/h;h=maxSize}}
+      canvas.width=w;canvas.height=h;
+      ctx.drawImage(img,0,0,w,h);
+      var dataUrl=canvas.toDataURL('image/jpeg',0.7);
+      config.cards[i]={type:'image',content:dataUrl,color:config.cards[i].color||'#4ecdc4',front:config.cards[i].front||null};
       localStorage.setItem('cardGameConfig',JSON.stringify(config));
       renderCards();
-      alert('✅ 背面圖片已上傳！');
+      alert('✅ 圖片已儲存！(已壓縮)');
     };
-    r.readAsDataURL(f);
+    img.src=URL.createObjectURL(f);
   };
   inp.click();
 }
