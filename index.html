@@ -110,9 +110,13 @@ function uploadCardImage(i){
       ctx.drawImage(img,0,0,w,h);
       var dataUrl=canvas.toDataURL('image/jpeg',0.7);
       config.cards[i]={type:'image',content:dataUrl,color:config.cards[i].color||'#4ecdc4',front:config.cards[i].front||null};
-      localStorage.setItem('cardGameConfig',JSON.stringify(config));
-      renderCards();
-      alert('✅ 圖片已儲存！(已壓縮)');
+      try{
+        localStorage.setItem('cardGameConfig',JSON.stringify(config));
+        renderCards();
+        alert('✅ 圖片已儲存！(已壓縮)');
+      }catch(e){
+        alert('⚠️ 儲存空間不足！請清除啲舊圖片');
+      }
     };
     img.src=URL.createObjectURL(f);
   };
@@ -258,10 +262,14 @@ function saveCard(){
         else{alert('請先選擇背面圖片！');return}
       }
       config.cards[i]=card;
-      localStorage.setItem('cardGameConfig',JSON.stringify(config));
-      renderCards();
-      closeModal();
-      alert('✅ 已儲存！');
+      try{
+        localStorage.setItem('cardGameConfig',JSON.stringify(config));
+        renderCards();
+        closeModal();
+        alert('✅ 已儲存！');
+      }catch(e){
+        alert('⚠️ 儲存空間不足！');
+      }
       createConfetti();
     };
     r.readAsDataURL(frontFile);
@@ -276,10 +284,14 @@ function saveCard(){
       else{alert('請先選擇背面圖片！');return}
     }
     config.cards[i]=card;
-    localStorage.setItem('cardGameConfig',JSON.stringify(config));
-    renderCards();
-    closeModal();
-    alert('✅ 已儲存！');
+    try{
+      localStorage.setItem('cardGameConfig',JSON.stringify(config));
+      renderCards();
+      closeModal();
+      alert('✅ 已儲存！');
+    }catch(e){
+      alert('⚠️ 儲存空間不足！');
+    }
     createConfetti();
   }
 }
