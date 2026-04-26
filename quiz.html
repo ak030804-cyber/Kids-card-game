@@ -20,7 +20,6 @@
         
         .start-screen { text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .start-screen h2 { color: #FF8C00; margin-bottom: 20px; }
-        .start-screen p { color: #666; margin-bottom: 15px; }
         
         .btn { padding: 15px 40px; font-size: 1.2rem; border: none; border-radius: 50px; cursor: pointer; background: #FF8C00; color: white; font-weight: bold; }
         .btn:hover { transform: scale(1.05); }
@@ -59,19 +58,18 @@
         <h1>🐝 Honey Bee Quiz 🐝</h1>
         
         <div class="start-screen active">
-            <h2>Test Your Bee Knowledge!</h2>
-            <p>This quiz has 20 questions about honey bees</p>
-            <p>Each question has 4 choices</p>
-            <p><strong>Let's see how much you know! 📈</strong></p>
-            <button class="btn" onclick="startQuiz()">Start Quiz ▶️</button>
+            <h2>Honey Bee Knowledge Quiz</h2>
+            <p>20 Questions based on the school test paper</p>
+            <p>Good luck!</p>
+            <button class="btn" onclick="startQuiz()">Start ▶️</button>
         </div>
         
         <div class="quiz-screen">
             <div class="progress">
-                <span>Question <span id="currentQ">1</span>/20</span>
+                <span>Q<span id="currentQ">1</span>/20</span>
                 <span>Score: <span id="score">0</span></span>
             </div>
-            <div class="question" id="question">Question...</div>
+            <div class="question" id="question">...</div>
             <div class="options" id="options"></div>
             <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()" style="display:none">Next ▶️</button>
         </div>
@@ -88,25 +86,25 @@
     <script>
         const questions = [
             { q: "1. The honey bee is a type of ___.", options: ["A. Mammal", "B. Insect", "C. Bird", "D. Reptile"], answer: 1 },
-            { q: "2. The honey bee is a ___.", options: ["A. Herbivore", "B. Carnivore", "C. Omnivore", "D. Pollinator"], answer: 3 },
-            { q: "3. The bee has ___.", options: ["A. 2 legs", "B. 4 legs", "C. 6 legs", "D. 8 legs"], answer: 2 },
-            { q: "4. The bee uses the ___ for pollination.", options: ["A. Wings only", "B. Legs only", "C. Body and wings", "D. Stinger only"], answer: 2 },
-            { q: "5. Honey bees live in ___.", options: ["A. Hives", "B. Burrows", "C. Nests in trees", "D. Both A and C"], answer: 3 },
-            { q: "6. The three types of bees are ___.", options: ["A. Queen, King, Worker", "B. Queen, Drone, Worker", "C. Male, Female, Baby", "D. King, Prince, Worker"], answer: 1 },
-            { q: "7. The queen bee's job is to ___.", options: ["A. Make honey", "B. Protect the hive", "C. Lay eggs", "D. Collect pollen"], answer: 2 },
+            { q: "2. The honey bee is a ___.", options: ["A. Herbivore", "B. Carnivore", "C. Pollinator", "D. Predator"], answer: 2 },
+            { q: "3. The bee has ___.", options: ["A. 4 legs", "B. 6 legs", "C. 8 legs", "D. 10 legs"], answer: 1 },
+            { q: "4. The bee uses the ___ for pollination.", options: ["A. Wings only", "B. Legs only", "C. Body and wings", "D. Antenna"], answer: 2 },
+            { q: "5. Honey bees live in ___.", options: ["A. Burrows", "B. Nests in caves", "C. Hives", "D. Trees"], answer: 2 },
+            { q: "6. The three types of bees are ___.", options: ["A. Queen, King, Worker", "B. Queen, Drone, Worker", "C. King, Prince, Worker", "D. Queen, Male, Female"], answer: 1 },
+            { q: "7. The queen bee's job is to ___.", options: ["A. Make honey", "B. Collect pollen", "C. Lay eggs", "D. Protect the hive"], answer: 2 },
             { q: "8. Worker bees are ___.", options: ["A. Male", "B. Female", "C. Both male and female", "D. Neither"], answer: 1 },
             { q: "9. Drones are ___.", options: ["A. Female bees", "B. Male bees", "C. Baby bees", "D. Queen bees"], answer: 1 },
             { q: "10. Worker bees collect ___.", options: ["A. Only pollen", "B. Only nectar", "C. Both pollen and nectar", "D. Only water"], answer: 2 },
-            { q: "11. Honey is made from ___.", options: ["A. Pollen", "B. Nectar", "C. Wax", "D. Propolis"], answer: 1 },
-            { q: "12. Bees have ___ pairs of wings.", options: ["A. 1", "B. 2", "C. 3", "D. 4"], answer: 1 },
+            { q: "11. Honey is made from ___.", options: ["A. Pollen", "B. Nectar", "C. Wax", "D. Honey"], answer: 1 },
+            { q: "12. Bees have ___ pairs of wings.", options: ["A. 1 pair", "B. 2 pairs", "C. 3 pairs", "D. 4 pairs"], answer: 1 },
             { q: "13. The bee's body has ___ main parts.", options: ["A. 2", "B. 3", "C. 4", "D. 5"], answer: 1 },
-            { q: "14. The three main body parts are ___.", options: ["A. Head, Thorax, Abdomen", "B. Head, Body, Tail", "C. Eyes, Wings, Legs", "D. Antenna, Thorax, Wings"], answer: 0 },
+            { q: "14. The three main body parts are ___.", options: ["A. Head, Body, Tail", "B. Head, Thorax, Abdomen", "C. Head, Wings, Legs", "D. Eyes, Wings, Legs"], answer: 1 },
             { q: "15. Bees can see ___.", options: ["A. Only black and white", "B. All colors", "C. UV light", "D. Infrared"], answer: 2 },
-            { q: "16. The worker bee's wings beat ___ times per second.", options: ["A. 50", "B. 200", "C. 500", "D. 1000"], answer: 1 },
-            { q: "17. A bee can fly up to ___ km per hour.", options: ["A. 5", "B. 15", "C. 25", "D. 50"], answer: 2 },
-            { q: "18. The bee's stinger is part of its ___.", options: ["A. Head", "B. Thorax", "C. Abdomen", "D. Legs"], answer: 2 },
+            { q: "16. The worker bee's wings beat ___ times per second.", options: ["A. 50", "B. 100", "C. 200", "D. 300"], answer: 2 },
+            { q: "17. A bee can fly up to ___ km per hour.", options: ["A. 15 km/h", "B. 25 km/h", "C. 35 km/h", "D. 45 km/h"], answer: 1 },
+            { q: "18. The bee's stinger is part of its ___.", options: ["A. Head", "B. Thorax", "C. Abdomen", "D. Wings"], answer: 2 },
             { q: "19. ___ are necessary for plants to make fruits and seeds.", options: ["A. Wind", "B. Rain", "C. Pollinators", "D. Sunlight"], answer: 2 },
-            { q: "20. Bees help humans by ___.", options: ["A. Making honey only", "B. Pollinating crops", "C. Both honey and pollination", "D. Nothing"], answer: 2 }
+            { q: "20. Bees help humans by ___.", options: ["A. Making honey only", "B. Pollinating crops only", "C. Both honey and pollination", "D. Nothing"], answer: 2 }
         ];
 
         let currentQuestion = 0;
@@ -177,13 +175,13 @@
             
             const msg = document.getElementById('message');
             if (score >= 18) {
-                msg.textContent = '🎉 Amazing! You are a Bee Expert!';
-            } else if (score >= 12) {
-                msg.textContent = '👍 Good job! Keep learning!';
-            } else if (score >= 6) {
-                msg.textContent = '📚 Try again to learn more!';
+                msg.textContent = '🎉 Perfect! Bee Expert!';
+            } else if (score >= 15) {
+                msg.textContent = '👍 Great job!';
+            } else if (score >= 10) {
+                msg.textContent = '📚 Good effort!';
             } else {
-                msg.textContent = '💪 Study more about bees!';
+                msg.textContent = '💪 Keep learning!';
             }
         }
 
