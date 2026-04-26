@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yes/No Questions Quiz 📝 v=5</title>
+    <title>Yes/No Questions Quiz 📝 v=6</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -55,11 +55,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>❓ Yes/No Questions Quiz v=5</h1>
+        <h1>❓ Yes/No Questions Quiz v=6</h1>
         
         <div class="start-screen active">
             <h2>Is this...? Are those...?</h2>
-            <p>10 Questions</p>
+            <p>Grammar Focus: Questions for information</p>
+            <p>Using 'Is this/that...' and 'Are these/those...' ✅</p>
             <p>Good luck!</p>
             <button class="btn" onclick="startQuiz()">Start ▶️</button>
         </div>
@@ -85,16 +86,16 @@
 
     <script>
         const questions = [
-            { q: "1. A: Is this a peach? B: _____, it is.", options: ["A) Yes", "B) No", "C) Maybe", "D) Okay"], answer: 0 },
-            { q: "2. A: Is that a banana? B: _____, it is not.", options: ["A) Yes", "B) No", "C) Please", "D) Thanks"], answer: 1 },
-            { q: "3. A: Are these apples? B: _____, they are.", options: ["A) Yes", "B) No", "C) Maybe", "D) Sorry"], answer: 0 },
-            { q: "4. A: Are those oranges? B: _____, they are not.", options: ["A) Yes", "B) No", "C) Okay", "D) Sure"], answer: 1 },
-            { q: "5. We use 'Is this/that?' for _____ object.", options: ["A) singular", "B) plural", "C) plural only", "D) no object"], answer: 0 },
-            { q: "6. We use 'Are these/those?' for _____ objects.", options: ["A) singular", "B) plural", "C) singular only", "D) no object"], answer: 1 },
-            { q: "7. A: Is this ____ pear? B: Yes, it is.", options: ["A) a", "B) an", "C) the", "D) some"], answer: 0 },
-            { q: "8. A: Are _____ grapes? B: No, they are not.", options: ["A) this", "B) that", "C) these", "D) it"], answer: 2 },
-            { q: "9. 'This' is used for objects _____ us.", options: ["A) far from", "B) near", "C) under", "D) behind"], answer: 1 },
-            { q: "10. 'That' is used for objects _____ us.", options: ["A) near", "B) far from", "C) on", "D) in"], answer: 1 }
+            { q: "A: Is _____ a peach? B: Yes, it is.", options: ["A) this", "B) that", "C) these", "D) those"], answer: 0 },
+            { q: "A: Is _____ a banana? B: No, _____ is not.", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 1 },
+            { q: "A: Are _____ apples? B: Yes, they are.", options: ["A) this", "B) that", "C) these", "D) it"], answer: 2 },
+            { q: "A: Are _____ oranges? B: No, they are not.", options: ["A) this", "B) that", "C) these", "D) those"], answer: 3 },
+            { q: "'This' is used for things _____ us.", options: ["A) far from", "B) near", "C) under", "D) behind"], answer: 1 },
+            { q: "'That' is used for things _____ us.", options: ["A) near", "B) far from", "C) on", "D) in"], answer: 1 },
+            { q: "We use 'Is this/that?' for _____ object.", options: ["A) singular", "B) plural", "C) plural only", "D) no object"], answer: 0 },
+            { q: "We use 'Are these/those?' for _____ objects.", options: ["A) singular", "B) plural", "C) singular only", "D) no object"], answer: 1 },
+            { q: "A: Is _____ near me? B: Yes, _____ is.", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 0 },
+            { q: "A: Is _____ far from me? B: Yes, _____ is.", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 1 }
         ];
 
         let currentQuestion = 0;
