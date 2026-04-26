@@ -3,63 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Honey Bee Quiz 🐝</title>
+    <title>English Revision Quiz 📝</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Comic Sans MS', sans-serif;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             min-height: 100vh;
             padding: 20px;
         }
         .container { max-width: 600px; margin: 0 auto; }
-        h1 { text-align: center; color: #333; margin-bottom: 20px; }
+        h1 { text-align: center; color: white; margin-bottom: 20px; }
         
         .start-screen, .quiz-screen, .result-screen { display: none; }
         .start-screen.active, .quiz-screen.active, .result-screen.active { display: block; }
         
         .start-screen { text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .start-screen h2 { color: #FF8C00; margin-bottom: 20px; }
+        .start-screen h2 { color: #667eea; margin-bottom: 20px; }
         
-        .btn { padding: 15px 40px; font-size: 1.2rem; border: none; border-radius: 50px; cursor: pointer; background: #FF8C00; color: white; font-weight: bold; }
+        .btn { padding: 15px 40px; font-size: 1.2rem; border: none; border-radius: 50px; cursor: pointer; background: #667eea; color: white; font-weight: bold; }
         .btn:hover { transform: scale(1.05); }
         
         .quiz-screen { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .progress { display: flex; justify-content: space-between; margin-bottom: 20px; color: #666; }
-        .question { font-size: 1.2rem; color: #333; margin-bottom: 25px; line-height: 1.6; }
+        .question { font-size: 1.1rem; color: #333; margin-bottom: 20px; line-height: 1.5; }
         
-        .options { display: flex; flex-direction: column; gap: 12px; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
         .option {
-            padding: 15px 20px;
+            padding: 12px 15px;
             border: 2px solid #ddd;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
-        .option:hover { background: #FFF8DC; border-color: #FFA500; }
-        .option.selected { background: #FFA500; color: white; border-color: #FF8C00; }
+        .option:hover { background: #f0f0ff; border-color: #667eea; }
+        .option.selected { background: #667eea; color: white; border-color: #5648a8; }
         .option.correct { background: #4CAF50; color: white; border-color: #45a049; }
         .option.wrong { background: #f44336; color: white; border-color: #da190b; }
         
-        .next-btn { width: 100%; margin-top: 20px; }
+        .next-btn { width: 100%; margin-top: 15px; }
         
         .result-screen { text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .score { font-size: 4rem; color: #FF8C00; font-weight: bold; }
+        .score { font-size: 4rem; color: #667eea; font-weight: bold; }
         .score-label { font-size: 1.5rem; color: #666; margin-bottom: 20px; }
         .message { font-size: 1.3rem; color: #333; margin: 20px 0; }
         
         .home-btn { background: #4CAF50; }
-        .restart-btn { background: #FF8C00; }
+        .restart-btn { background: #667eea; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🐝 Honey Bee Quiz 🐝</h1>
+        <h1>📝 English Revision Quiz</h1>
         
         <div class="start-screen active">
-            <h2>Honey Bee Knowledge Quiz</h2>
-            <p>20 Questions based on the school test paper</p>
+            <h2>Units 1-3 Revision</h2>
+            <p>20 Questions based on your worksheet</p>
             <p>Good luck!</p>
             <button class="btn" onclick="startQuiz()">Start ▶️</button>
         </div>
@@ -85,26 +85,35 @@
 
     <script>
         const questions = [
-            { q: "1. The honey bee is a type of ___.", options: ["A. Mammal", "B. Insect", "C. Bird", "D. Reptile"], answer: 1 },
-            { q: "2. The honey bee is a ___.", options: ["A. Herbivore", "B. Carnivore", "C. Pollinator", "D. Predator"], answer: 2 },
-            { q: "3. The bee has ___.", options: ["A. 4 legs", "B. 6 legs", "C. 8 legs", "D. 10 legs"], answer: 1 },
-            { q: "4. The bee uses the ___ for pollination.", options: ["A. Wings only", "B. Legs only", "C. Body and wings", "D. Antenna"], answer: 2 },
-            { q: "5. Honey bees live in ___.", options: ["A. Burrows", "B. Nests in caves", "C. Hives", "D. Trees"], answer: 2 },
-            { q: "6. The three types of bees are ___.", options: ["A. Queen, King, Worker", "B. Queen, Drone, Worker", "C. King, Prince, Worker", "D. Queen, Male, Female"], answer: 1 },
-            { q: "7. The queen bee's job is to ___.", options: ["A. Make honey", "B. Collect pollen", "C. Lay eggs", "D. Protect the hive"], answer: 2 },
-            { q: "8. Worker bees are ___.", options: ["A. Male", "B. Female", "C. Both male and female", "D. Neither"], answer: 1 },
-            { q: "9. Drones are ___.", options: ["A. Female bees", "B. Male bees", "C. Baby bees", "D. Queen bees"], answer: 1 },
-            { q: "10. Worker bees collect ___.", options: ["A. Only pollen", "B. Only nectar", "C. Both pollen and nectar", "D. Only water"], answer: 2 },
-            { q: "11. Honey is made from ___.", options: ["A. Pollen", "B. Nectar", "C. Wax", "D. Honey"], answer: 1 },
-            { q: "12. Bees have ___ pairs of wings.", options: ["A. 1 pair", "B. 2 pairs", "C. 3 pairs", "D. 4 pairs"], answer: 1 },
-            { q: "13. The bee's body has ___ main parts.", options: ["A. 2", "B. 3", "C. 4", "D. 5"], answer: 1 },
-            { q: "14. The three main body parts are ___.", options: ["A. Head, Body, Tail", "B. Head, Thorax, Abdomen", "C. Head, Wings, Legs", "D. Eyes, Wings, Legs"], answer: 1 },
-            { q: "15. Bees can see ___.", options: ["A. Only black and white", "B. All colors", "C. UV light", "D. Infrared"], answer: 2 },
-            { q: "16. The worker bee's wings beat ___ times per second.", options: ["A. 50", "B. 100", "C. 200", "D. 300"], answer: 2 },
-            { q: "17. A bee can fly up to ___ km per hour.", options: ["A. 15 km/h", "B. 25 km/h", "C. 35 km/h", "D. 45 km/h"], answer: 1 },
-            { q: "18. The bee's stinger is part of its ___.", options: ["A. Head", "B. Thorax", "C. Abdomen", "D. Wings"], answer: 2 },
-            { q: "19. ___ are necessary for plants to make fruits and seeds.", options: ["A. Wind", "B. Rain", "C. Pollinators", "D. Sunlight"], answer: 2 },
-            { q: "20. Bees help humans by ___.", options: ["A. Making honey only", "B. Pollinating crops only", "C. Both honey and pollination", "D. Nothing"], answer: 2 }
+            // A. Q&A
+            { q: "1. A: How many mangoes are there? B: There ___ mangoes.", options: ["A. is", "B. are", "C. have", "D. has"], answer: 1 },
+            { q: "2. A: How many ___ are there? B: I can see ___.", options: ["A. apple / an apple", "B. apples / apples", "C. apples / an apple", "D. an apple / apples"], answer: 2 },
+            
+            // B. Prepositions (in, on, under)
+            { q: "3. The flowers are ___ the grass.", options: ["A. in", "B. on", "C. under", "D. at"], answer: 1 },
+            { q: "4. The ball is ___ the box.", options: ["A. in", "B. on", "C. under", "D. at"], answer: 0 },
+            { q: "5. The cat is ___ the table.", options: ["A. in", "B. on", "C. under", "D. at"], answer: 2 },
+            
+            // C. Correct the underlined words (singular/plural)
+            { q: "6. 'I have fourteen strawberrys.' → Correct:", options: ["A. strawberry", "B. strawberries", "C. strawberryes", "D. strawberrie"], answer: 1 },
+            { q: "7. 'Sam have a toy bus.' → Correct:", options: ["A. Sam have", "B. Sam haves", "C. Sam has", "D. Sam having"], answer: 2 },
+            { q: "8. 'I like this teddy bears.' → Correct:", options: ["A. this teddy bear", "B. these teddy bear", "C. these teddy bears", "D. this teddy bears"], answer: 2 },
+            { q: "9. 'How many apple are there?' → Correct:", options: ["A. apple are", "B. apples are", "C. apples is", "D. apple is"], answer: 1 },
+            { q: "10. 'I can touch a egg.' → Correct:", options: ["A. a egg", "B. an egg", "C. the egg", "D. eggs"], answer: 1 },
+            
+            // D. Best answers
+            { q: "11. I ___ two big ___.", options: ["A. am / pear", "B. have / pears", "C. has / pear", "D. is / pears"], answer: 1 },
+            { q: "12. Tom ___ three toy planes.", options: ["A. has", "B. have", "C. is", "D. are"], answer: 0 },
+            { q: "13. A: ___ robots are there? B: There is one robot.", options: ["A. What", "B. How many", "C. Where", "D. Who"], answer: 1 },
+            { q: "14. ___ balls. ___ big.", options: ["A. I like / It is", "B. I like / They are", "C. I have / It is", "D. These are / They are"], answer: 1 },
+            { q: "15. I can ___ 'quack, quack'.", options: ["A. see", "B. hear", "C. smell", "D. taste"], answer: 1 },
+            { q: "16. A: ___ that a watermelon? B: No, ___ .", options: ["A. Is that / it is", "B. Is that / it is not", "C. Are those / it is", "D. What / it is not"], answer: 1 },
+            
+            // E. a, an, some, the
+            { q: "17. The bird is in ___ sky.", options: ["A. a", "B. an", "C. the", "D. some"], answer: 2 },
+            { q: "18. Alan has ___ orange.", options: ["A. a", "B. an", "C. the", "D. some"], answer: 1 },
+            { q: "19. There are ___ grapes.", options: ["A. a", "B. an", "C. the", "D. some"], answer: 3 },
+            { q: "20. This is ___ lion.", options: ["A. a", "B. an", "C. the", "D. some"], answer: 0 }
         ];
 
         let currentQuestion = 0;
@@ -175,13 +184,13 @@
             
             const msg = document.getElementById('message');
             if (score >= 18) {
-                msg.textContent = '🎉 Perfect! Bee Expert!';
+                msg.textContent = '🎉 Perfect! English Expert!';
             } else if (score >= 15) {
                 msg.textContent = '👍 Great job!';
             } else if (score >= 10) {
                 msg.textContent = '📚 Good effort!';
             } else {
-                msg.textContent = '💪 Keep learning!';
+                msg.textContent = '💪 Keep practicing!';
             }
         }
 
