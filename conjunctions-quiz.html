@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjunctions Quiz 📝</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Comic Sans MS', sans-serif;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; color: white; margin-bottom: 20px; }
+        
+        .start-screen, .quiz-screen, .result-screen { display: none; }
+        .start-screen.active, .quiz-screen.active, .result-screen.active { display: block; }
+        
+        .start-screen { text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .start-screen h2 { color: #11998e; margin-bottom: 20px; }
+        
+        .btn { padding: 15px 40px; font-size: 1.2rem; border: none; border-radius: 50px; cursor: pointer; background: #11998e; color: white; font-weight: bold; }
+        .btn:hover { transform: scale(1.05); }
+        
+        .quiz-screen { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .progress { display: flex; justify-content: space-between; margin-bottom: 20px; color: #666; }
+        .question { font-size: 1.1rem; color: #333; margin-bottom: 20px; line-height: 1.5; }
+        
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        .option:hover { background: #f0fff4; border-color: #11998e; }
+        .option.selected { background: #11998e; color: white; border-color: #0d7a6f; }
+        .option.correct { background: #4CAF50; color: white; border-color: #45a049; }
+        .option.wrong { background: #f44336; color: white; border-color: #da190b; }
+        
+        .next-btn { width: 100%; margin-top: 15px; }
+        
+        .result-screen { text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .score { font-size: 4rem; color: #11998e; font-weight: bold; }
+        .score-label { font-size: 1.5rem; color: #666; margin-bottom: 20px; }
+        .message { font-size: 1.3rem; color: #333; margin: 20px 0; }
+        
+        .home-btn { background: #4CAF50; }
+        .restart-btn { background: #11998e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Conjunctions Quiz</h1>
+        
+        <div class="start-screen active">
+            <h2>English Grammar</h2>
+            <p>8 Questions</p>
+            <p>Good luck!</p>
+            <button class="btn" onclick="startQuiz()">Start ▶️</button>
+        </div>
+        
+        <div class="quiz-screen">
+            <div class="progress">
+                <span>Q<span id="currentQ">1</span>/8</span>
+                <span>Score: <span id="score">0</span></span>
+            </div>
+            <div class="question" id="question">...</div>
+            <div class="options" id="options"></div>
+            <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()" style="display:none">Next ▶️</button>
+        </div>
+        
+        <div class="result-screen">
+            <div class="score" id="finalScore">0</div>
+            <div class="score-label">out of 8</div>
+            <div class="message" id="message">...</div>
+            <button class="btn restart-btn" onclick="restartQuiz()">Try Again 🔄</button>
+            <button class="btn home-btn" onclick="goHome()" style="margin-top:10px">Home 🏠</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "1. I bought the computer _____ I needed it for my work.", options: ["A) because", "B) while", "C) or", "D) so"], answer: 0 },
+            { q: "2. John must revise his notes _____ he fails the exam.", options: ["A) because", "B) while", "C) or", "D) so"], answer: 2 },
+            { q: "3. We visited the museum _____ we were in London.", options: ["A) because", "B) while", "C) or", "D) so"], answer: 1 },
+            { q: "4. I was not feeling well _____ I went to see the doctor.", options: ["A) because", "B) while", "C) or", "D) so"], answer: 3 },
+            { q: "5. I will call you as soon as I _____ home.", options: ["A) reach", "B) will reach", "C) am reaching", "D) reached"], answer: 0 },
+            { q: "6. The child went to the playground _____ his mother was cooking.", options: ["A) because", "B) while", "C) or", "D) so"], answer: 1 },
+            { q: "7. Anna bought a new dress _____ she liked it very much.", options: ["A) because", "B) while", "C) or", "D) so"], answer: 0 },
+            { q: "8. The boy shouted _____ he was excited.", options: ["A) because", "B) while", "C) or", "D) so"], answer: 0 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        function startQuiz() {
+            document.querySelector('.start-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('question').textContent = q.q;
+            document.getElementById('score').textContent = score;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = opt;
+                div.onclick = () => selectOption(i, div);
+                optionsDiv.appendChild(div);
+            });
+            
+            document.getElementById('nextBtn').style.display = 'none';
+            selectedAnswer = null;
+        }
+
+        function selectOption(i, div) {
+            if (selectedAnswer !== null) return;
+            selectedAnswer = i;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            div.classList.add('selected');
+            
+            const q = questions[currentQuestion];
+            if (i === q.answer) {
+                div.classList.add('correct');
+                score++;
+                document.getElementById('score').textContent = score;
+            } else {
+                div.classList.add('wrong');
+                options[q.answer].classList.add('correct');
+            }
+            
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= questions.length) {
+                showResult();
+            } else {
+                showQuestion();
+            }
+        }
+
+        function showResult() {
+            document.querySelector('.quiz-screen').classList.remove('active');
+            document.querySelector('.result-screen').classList.add('active');
+            document.getElementById('finalScore').textContent = score;
+            
+            const msg = document.getElementById('message');
+            if (score >= 7) {
+                msg.textContent = '🎉 Perfect! English Grammar Expert!';
+            } else if (score >= 5) {
+                msg.textContent = '👍 Great job!';
+            } else if (score >= 3) {
+                msg.textContent = '📚 Good effort!';
+            } else {
+                msg.textContent = '💪 Keep practicing conjunctions!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector('.result-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function goHome() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector('.result-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.remove('active');
+            document.querySelector('.start-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>

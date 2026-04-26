@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 英文學習遊戲</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Comic Sans MS', 'Microsoft JhengHei', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 40px; color: white; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2rem; opacity: 0.9; }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .game-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        .game-icon { font-size: 4rem; margin-bottom: 15px; }
+        .game-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .game-desc { font-size: 1rem; color: #666; }
+        
+        .game-card.conjunctions { border-bottom: 5px solid #11998e; }
+        .game-card.yes-no { border-bottom: 5px solid #f5576c; }
+        .game-card.cards { border-bottom: 5px solid #667eea; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 英文學習遊戲</h1>
+            <p class="subtitle">選擇一個遊戲開始學習！</p>
+        </header>
+        
+        <div class="games-grid">
+            <!-- 現有的翻牌遊戲 -->
+            <a href="index.html" class="game-card cards">
+                <div class="game-icon">🎴</div>
+                <div class="game-title">翻牌認字遊戲</div>
+                <div class="game-desc">點擊卡片，學習中文字詞！</div>
+            </a>
+            
+            <!-- Conjunctions Quiz -->
+            <a href="conjunctions-quiz.html" class="game-card conjunctions">
+                <div class="game-icon">🔗</div>
+                <div class="game-title">連接詞 Quiz</div>
+                <div class="game-desc">8 題英文語法 - because/while/so</div>
+            </a>
+            
+            <!-- Yes/No Questions Quiz -->
+            <a href="yes-no-questions-quiz.html" class="game-card yes-no">
+                <div class="game-icon">❓</div>
+                <div class="game-title">Yes/No 問答 Quiz</div>
+                <div class="game-desc">10 題 - Is this? / Are those?</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

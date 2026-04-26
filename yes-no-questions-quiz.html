@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yes/No Questions Quiz 📝</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Comic Sans MS', sans-serif;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; color: white; margin-bottom: 20px; }
+        
+        .start-screen, .quiz-screen, .result-screen { display: none; }
+        .start-screen.active, .quiz-screen.active, .result-screen.active { display: block; }
+        
+        .start-screen { text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .start-screen h2 { color: #f5576c; margin-bottom: 20px; }
+        
+        .btn { padding: 15px 40px; font-size: 1.2rem; border: none; border-radius: 50px; cursor: pointer; background: #f5576c; color: white; font-weight: bold; }
+        .btn:hover { transform: scale(1.05); }
+        
+        .quiz-screen { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .progress { display: flex; justify-content: space-between; margin-bottom: 20px; color: #666; }
+        .question { font-size: 1.1rem; color: #333; margin-bottom: 20px; line-height: 1.5; }
+        
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        .option:hover { background: #fff0f3; border-color: #f5576c; }
+        .option.selected { background: #f5576c; color: white; border-color: #d9445c; }
+        .option.correct { background: #4CAF50; color: white; border-color: #45a049; }
+        .option.wrong { background: #f44336; color: white; border-color: #da190b; }
+        
+        .next-btn { width: 100%; margin-top: 15px; }
+        
+        .result-screen { text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .score { font-size: 4rem; color: #f5576c; font-weight: bold; }
+        .score-label { font-size: 1.5rem; color: #666; margin-bottom: 20px; }
+        .message { font-size: 1.3rem; color: #333; margin: 20px 0; }
+        
+        .home-btn { background: #4CAF50; }
+        .restart-btn { background: #f5576c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>❓ Yes/No Questions Quiz</h1>
+        
+        <div class="start-screen active">
+            <h2>Is this...? Are those...?</h2>
+            <p>10 Questions</p>
+            <p>Good luck!</p>
+            <button class="btn" onclick="startQuiz()">Start ▶️</button>
+        </div>
+        
+        <div class="quiz-screen">
+            <div class="progress">
+                <span>Q<span id="currentQ">1</span>/10</span>
+                <span>Score: <span id="score">0</span></span>
+            </div>
+            <div class="question" id="question">...</div>
+            <div class="options" id="options"></div>
+            <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()" style="display:none">Next ▶️</button>
+        </div>
+        
+        <div class="result-screen">
+            <div class="score" id="finalScore">0</div>
+            <div class="score-label">out of 10</div>
+            <div class="message" id="message">...</div>
+            <button class="btn restart-btn" onclick="restartQuiz()">Try Again 🔄</button>
+            <button class="btn home-btn" onclick="goHome()" style="margin-top:10px">Home 🏠</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "1. A: Is this a peach? B: _____, it is.", options: ["A) Yes", "B) No", "C) Maybe", "D) Okay"], answer: 0 },
+            { q: "2. A: Is that a banana? B: _____, it is not.", options: ["A) Yes", "B) No", "C) Please", "D) Thanks"], answer: 1 },
+            { q: "3. A: Are these apples? B: _____, they are.", options: ["A) Yes", "B) No", "C) Maybe", "D) Sorry"], answer: 0 },
+            { q: "4. A: Are those oranges? B: _____, they are not.", options: ["A) Yes", "B) No", "C) Okay", "D) Sure"], answer: 1 },
+            { q: "5. We use 'Is this/that?' for _____ object.", options: ["A) singular", "B) plural", "C) plural only", "D) no object"], answer: 0 },
+            { q: "6. We use 'Are these/those?' for _____ objects.", options: ["A) singular", "B) plural", "C) singular only", "D) no object"], answer: 1 },
+            { q: "7. A: Is this ____ pear? B: Yes, it is.", options: ["A) a", "B) an", "C) the", "D) some"], answer: 0 },
+            { q: "8. A: Are _____ grapes? B: No, they are not.", options: ["A) this", "B) that", "C) these", "D) it"], answer: 2 },
+            { q: "9. 'This' is used for objects _____ us.", options: ["A) far from", "B) near", "C) under", "D) behind"], answer: 1 },
+            { q: "10. 'That' is used for objects _____ us.", options: ["A) near", "B) far from", "C) on", "D) in"], answer: 1 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        function startQuiz() {
+            document.querySelector('.start-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('question').textContent = q.q;
+            document.getElementById('score').textContent = score;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = opt;
+                div.onclick = () => selectOption(i, div);
+                optionsDiv.appendChild(div);
+            });
+            
+            document.getElementById('nextBtn').style.display = 'none';
+            selectedAnswer = null;
+        }
+
+        function selectOption(i, div) {
+            if (selectedAnswer !== null) return;
+            selectedAnswer = i;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            div.classList.add('selected');
+            
+            const q = questions[currentQuestion];
+            if (i === q.answer) {
+                div.classList.add('correct');
+                score++;
+                document.getElementById('score').textContent = score;
+            } else {
+                div.classList.add('wrong');
+                options[q.answer].classList.add('correct');
+            }
+            
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= questions.length) {
+                showResult();
+            } else {
+                showQuestion();
+            }
+        }
+
+        function showResult() {
+            document.querySelector('.quiz-screen').classList.remove('active');
+            document.querySelector('.result-screen').classList.add('active');
+            document.getElementById('finalScore').textContent = score;
+            
+            const msg = document.getElementById('message');
+            if (score >= 9) {
+                msg.textContent = '🎉 Perfect! English Expert!';
+            } else if (score >= 7) {
+                msg.textContent = '👍 Great job!';
+            } else if (score >= 5) {
+                msg.textContent = '📚 Good effort!';
+            } else {
+                msg.textContent = '💪 Keep practicing Yes/No questions!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector('.result-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function goHome() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector('.result-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.remove('active');
+            document.querySelector('.start-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>
