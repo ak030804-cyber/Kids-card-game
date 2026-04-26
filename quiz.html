@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yes/No Questions Quiz 📝 v=6</title>
+    <title>Yes/No Questions Quiz 📝 v=7</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -26,7 +26,9 @@
         
         .quiz-screen { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .progress { display: flex; justify-content: space-between; margin-bottom: 20px; color: #666; }
-        .question { font-size: 1.1rem; color: #333; margin-bottom: 20px; line-height: 1.5; }
+        .question { font-size: 1.3rem; color: #333; margin-bottom: 20px; line-height: 1.5; text-align: center; }
+        
+        .question-img { font-size: 4rem; display: block; margin: 15px 0; text-align: center; }
         
         .options { display: flex; flex-direction: column; gap: 10px; }
         .option {
@@ -35,7 +37,7 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
         .option:hover { background: #fff0f3; border-color: #f5576c; }
         .option.selected { background: #f5576c; color: white; border-color: #d9445c; }
@@ -55,10 +57,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>❓ Yes/No Questions Quiz v=6</h1>
+        <h1>❓ Yes/No Questions Quiz v=7</h1>
         
         <div class="start-screen active">
-            <h2>Is this...? Are those...?</h2>
+            <img src="quiz-image.jpg" style="max-width:100%;border-radius:15px;margin-bottom:20px">
+            <h2>Yes/No Questions</h2>
             <p>Grammar Focus: Questions for information</p>
             <p>Using 'Is this/that...' and 'Are these/those...' ✅</p>
             <p>Good luck!</p>
@@ -86,16 +89,16 @@
 
     <script>
         const questions = [
-            { q: "A: Is _____ a peach? B: Yes, it is.", options: ["A) this", "B) that", "C) these", "D) those"], answer: 0 },
-            { q: "A: Is _____ a banana? B: No, _____ is not.", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 1 },
-            { q: "A: Are _____ apples? B: Yes, they are.", options: ["A) this", "B) that", "C) these", "D) it"], answer: 2 },
-            { q: "A: Are _____ oranges? B: No, they are not.", options: ["A) this", "B) that", "C) these", "D) those"], answer: 3 },
-            { q: "'This' is used for things _____ us.", options: ["A) far from", "B) near", "C) under", "D) behind"], answer: 1 },
-            { q: "'That' is used for things _____ us.", options: ["A) near", "B) far from", "C) on", "D) in"], answer: 1 },
-            { q: "We use 'Is this/that?' for _____ object.", options: ["A) singular", "B) plural", "C) plural only", "D) no object"], answer: 0 },
-            { q: "We use 'Are these/those?' for _____ objects.", options: ["A) singular", "B) plural", "C) singular only", "D) no object"], answer: 1 },
-            { q: "A: Is _____ near me? B: Yes, _____ is.", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 0 },
-            { q: "A: Is _____ far from me? B: Yes, _____ is.", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 1 }
+            { q: "A: Is _____ a peach?", img: "🍑", options: ["A) this", "B) that", "C) these", "D) those"], answer: 0 },
+            { q: "A: Is _____ a banana?", img: "🍌", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 1 },
+            { q: "A: Are _____ apples?", img: "🍎", options: ["A) this", "B) that", "C) these", "D) it"], answer: 2 },
+            { q: "A: Are _____ oranges?", img: "🍊", options: ["A) this", "B) that", "C) these", "D) those"], answer: 3 },
+            { q: "'This' is used for things _____ us.", img: "👆", options: ["A) far from", "B) near", "C) under", "D) behind"], answer: 1 },
+            { q: "'That' is used for things _____ us.", img: "👉", options: ["A) near", "B) far from", "C) on", "D) in"], answer: 1 },
+            { q: "We use 'Is this/that?' for _____ object.", img: "1️⃣", options: ["A) singular", "B) plural", "C) plural only", "D) no object"], answer: 0 },
+            { q: "We use 'Are these/those?' for _____ objects.", img: "3️⃣", options: ["A) singular", "B) plural", "C) singular only", "D) no object"], answer: 1 },
+            { q: "A: Is _____ near me?", img: "📍", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 0 },
+            { q: "A: Is _____ far from me?", img: "�远处的", options: ["A) this / this", "B) that / that", "C) these / these", "D) those / those"], answer: 1 }
         ];
 
         let currentQuestion = 0;
@@ -111,7 +114,11 @@
         function showQuestion() {
             const q = questions[currentQuestion];
             document.getElementById('currentQ').textContent = currentQuestion + 1;
-            document.getElementById('question').textContent = q.q;
+            let html = q.q;
+            if (q.img) {
+                html += `<span class="question-img">${q.img}</span>`;
+            }
+            document.getElementById('question').innerHTML = html;
             document.getElementById('score').textContent = score;
             
             const optionsDiv = document.getElementById('options');
