@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>蜜蜂測驗遊戲 🐝</title>
+    <title>Honey Bee Quiz 🐝</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Microsoft JhengHei', sans-serif;
+            font-family: 'Comic Sans MS', sans-serif;
             background: linear-gradient(135deg, #FFD700, #FFA500);
             min-height: 100vh;
             padding: 20px;
@@ -20,14 +20,14 @@
         
         .start-screen { text-align: center; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .start-screen h2 { color: #FF8C00; margin-bottom: 20px; }
-        .start-screen p { color: #666; margin-bottom: 30px; }
+        .start-screen p { color: #666; margin-bottom: 15px; }
         
         .btn { padding: 15px 40px; font-size: 1.2rem; border: none; border-radius: 50px; cursor: pointer; background: #FF8C00; color: white; font-weight: bold; }
         .btn:hover { transform: scale(1.05); }
         
         .quiz-screen { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .progress { display: flex; justify-content: space-between; margin-bottom: 20px; color: #666; }
-        .question { font-size: 1.3rem; color: #333; margin-bottom: 25px; line-height: 1.6; }
+        .question { font-size: 1.2rem; color: #333; margin-bottom: 25px; line-height: 1.6; }
         
         .options { display: flex; flex-direction: column; gap: 12px; }
         .option {
@@ -36,7 +36,7 @@
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         .option:hover { background: #FFF8DC; border-color: #FFA500; }
         .option.selected { background: #FFA500; color: white; border-color: #FF8C00; }
@@ -56,57 +56,57 @@
 </head>
 <body>
     <div class="container">
-        <h1>🐝 蜜蜂測驗遊戲 🐝</h1>
+        <h1>🐝 Honey Bee Quiz 🐝</h1>
         
         <div class="start-screen active">
-            <h2>測試你既蜜蜂知識！</h2>
-            <p>呢個測驗有 20 條關於蜜蜂既問題</p>
-            <p>每題有 4 個選擇，答啱既話...</p>
-            <p><strong>就會見到得分升緊！📈</strong></p>
-            <button class="btn" onclick="startQuiz()">開始測驗 ▶️</button>
+            <h2>Test Your Bee Knowledge!</h2>
+            <p>This quiz has 20 questions about honey bees</p>
+            <p>Each question has 4 choices</p>
+            <p><strong>Let's see how much you know! 📈</strong></p>
+            <button class="btn" onclick="startQuiz()">Start Quiz ▶️</button>
         </div>
         
         <div class="quiz-screen">
             <div class="progress">
-                <span>題目 <span id="currentQ">1</span>/20</span>
-                <span>得分: <span id="score">0</span></span>
+                <span>Question <span id="currentQ">1</span>/20</span>
+                <span>Score: <span id="score">0</span></span>
             </div>
-            <div class="question" id="question">問題...</div>
+            <div class="question" id="question">Question...</div>
             <div class="options" id="options"></div>
-            <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()" style="display:none">下一題 ▶️</button>
+            <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()" style="display:none">Next ▶️</button>
         </div>
         
         <div class="result-screen">
             <div class="score" id="finalScore">0</div>
-            <div class="score-label">分 / 20</div>
+            <div class="score-label">out of 20</div>
             <div class="message" id="message">...</div>
-            <button class="btn restart-btn" onclick="restartQuiz()">再試一次 🔄</button>
-            <button class="btn home-btn" onclick="goHome()" style="margin-top:10px">回首頁 🏠</button>
+            <button class="btn restart-btn" onclick="restartQuiz()">Try Again 🔄</button>
+            <button class="btn home-btn" onclick="goHome()" style="margin-top:10px">Home 🏠</button>
         </div>
     </div>
 
     <script>
         const questions = [
-            { q: "1. 蜜蜂屬於 ___ 類動物？", options: ["A. 哺乳類", "B. 昆蟲類", "C. 鳥類", "D. 爬蟲類"], answer: 1 },
-            { q: "2. 蜜蜂既口器係 ___ ？", options: ["A. 咀嚼式", "B. 刺吸式", "C. 舔吸式", "D. 虹吸式"], answer: 0 },
-            { q: "3. 蜜蜂既視覺對 ___ 光特別敏感？", options: ["A. 紫外光", "B. 紅光", "C. 藍光", "D. 綠光"], answer: 0 },
-            { q: "4. 蜜蜂既主要食物係 ___ ？", options: ["A. 樹葉", "B. 水", "C. 木材", "D. 花蜜同花粉"], answer: 3 },
-            { q: "5. 蜂群中既蜜蜂點分工？", options: ["A. 全部一樣", "B. 只分工蟻", "C. 蜂后、雄蜂同工蜂", "D. 冇分工"], answer: 2 },
-            { q: "6. 蜜蜂既飛行頻率大約係 ___ ？", options: ["A. 50-100次/秒", "B. 200-250次/秒", "C. 500次/秒", "D. 1000次/秒"], answer: 1 },
-            { q: "7. 蜜蜂既巢穴主要用 ___ 整成？", options: ["A. 樹枝", "B. 泥", "C. 蜜蠟", "D. 樹葉"], answer: 2 },
-            { q: "8. 蜜蜂既刺針係邊度既一部分？", options: ["A. 頭部", "B. 腹部既骨質構成", "C. 腿部", "D. 翅膀"], answer: 1 },
-            { q: "9. 邊種物質可以解蜂毒？", options: ["A. 清水", "B. 酒精", "C. 稀鹽酸", "D. 鹽"], answer: 2 },
-            { q: "10. 蜜蜂既視覺有幾多隻眼？", options: ["A. 2隻", "B. 3隻", "C. 5隻", "D. 7隻"], answer: 2 },
-            { q: "11. 蜜蜂既觸角有幾多個感應器？", options: ["A. 數以千計", "B. 幾百個", "C. 幾十個", "D. 10個"], answer: 0 },
-            { q: "12. 蜜蜂既舞蹈語言係邊個發明既？", options: ["A. 達爾文", "B. 弗里希", "C. 牛頓", "D. 愛因斯坦"], answer: 1 },
-            { q: "13. 蜜蜂飛翔既最快時速大約係？", options: ["A. 10km/h", "B. 20km/h", "C. 30km/h", "D. 50km/h"], answer: 2 },
-            { q: "14. 蜜蜂既蟄針可以無限次使用？", options: ["A. True", "B. False", "C. 得一次", "D. 無限次"], answer: 1 },
-            { q: "15. 蜜蜂既視覺可以感應 ___ 光？", options: ["A. 紅外線", "B. 偏振光", "C. 鐳射光", "D. 紫外光"], answer: 1 },
-            { q: "16. 昆蟲既身體有幾多個體節？", options: ["A. 2個", "B. 3個", "C. 4個", "D. 5個"], answer: 1 },
-            { q: "17. 昆蟲既複眼由咩構成？", options: ["A. 一個大既水晶體", "B. 數千個小眼", "C. 兩個眼球", "D. 顯微鏡"], answer: 1 },
-            { q: "18. 完全變態既昆蟲不包括邊種？", options: ["A. 蝴蝶", "B. 甲蟲", "C. 蝗蟲", "D. 蜜蜂"], answer: 2 },
-            { q: "19. 昆蟲既血液主要功能係？", options: ["A. 運氧", "B. 運營養同廢物", "C. 抗菌", "D. 消化"], answer: 1 },
-            { q: "20. 蜜蜂對人類有咩貢獻？", options: ["A. 提供蜂蜜", "B. 授粉", "C. both A and B", "D. 冇貢獻"], answer: 2 }
+            { q: "1. The honey bee is a type of ___.", options: ["A. Mammal", "B. Insect", "C. Bird", "D. Reptile"], answer: 1 },
+            { q: "2. The honey bee is a ___.", options: ["A. Herbivore", "B. Carnivore", "C. Omnivore", "D. Pollinator"], answer: 3 },
+            { q: "3. The bee has ___.", options: ["A. 2 legs", "B. 4 legs", "C. 6 legs", "D. 8 legs"], answer: 2 },
+            { q: "4. The bee uses the ___ for pollination.", options: ["A. Wings only", "B. Legs only", "C. Body and wings", "D. Stinger only"], answer: 2 },
+            { q: "5. Honey bees live in ___.", options: ["A. Hives", "B. Burrows", "C. Nests in trees", "D. Both A and C"], answer: 3 },
+            { q: "6. The three types of bees are ___.", options: ["A. Queen, King, Worker", "B. Queen, Drone, Worker", "C. Male, Female, Baby", "D. King, Prince, Worker"], answer: 1 },
+            { q: "7. The queen bee's job is to ___.", options: ["A. Make honey", "B. Protect the hive", "C. Lay eggs", "D. Collect pollen"], answer: 2 },
+            { q: "8. Worker bees are ___.", options: ["A. Male", "B. Female", "C. Both male and female", "D. Neither"], answer: 1 },
+            { q: "9. Drones are ___.", options: ["A. Female bees", "B. Male bees", "C. Baby bees", "D. Queen bees"], answer: 1 },
+            { q: "10. Worker bees collect ___.", options: ["A. Only pollen", "B. Only nectar", "C. Both pollen and nectar", "D. Only water"], answer: 2 },
+            { q: "11. Honey is made from ___.", options: ["A. Pollen", "B. Nectar", "C. Wax", "D. Propolis"], answer: 1 },
+            { q: "12. Bees have ___ pairs of wings.", options: ["A. 1", "B. 2", "C. 3", "D. 4"], answer: 1 },
+            { q: "13. The bee's body has ___ main parts.", options: ["A. 2", "B. 3", "C. 4", "D. 5"], answer: 1 },
+            { q: "14. The three main body parts are ___.", options: ["A. Head, Thorax, Abdomen", "B. Head, Body, Tail", "C. Eyes, Wings, Legs", "D. Antenna, Thorax, Wings"], answer: 0 },
+            { q: "15. Bees can see ___.", options: ["A. Only black and white", "B. All colors", "C. UV light", "D. Infrared"], answer: 2 },
+            { q: "16. The worker bee's wings beat ___ times per second.", options: ["A. 50", "B. 200", "C. 500", "D. 1000"], answer: 1 },
+            { q: "17. A bee can fly up to ___ km per hour.", options: ["A. 5", "B. 15", "C. 25", "D. 50"], answer: 2 },
+            { q: "18. The bee's stinger is part of its ___.", options: ["A. Head", "B. Thorax", "C. Abdomen", "D. Legs"], answer: 2 },
+            { q: "19. ___ are necessary for plants to make fruits and seeds.", options: ["A. Wind", "B. Rain", "C. Pollinators", "D. Sunlight"], answer: 2 },
+            { q: "20. Bees help humans by ___.", options: ["A. Making honey only", "B. Pollinating crops", "C. Both honey and pollination", "D. Nothing"], answer: 2 }
         ];
 
         let currentQuestion = 0;
@@ -177,13 +177,13 @@
             
             const msg = document.getElementById('message');
             if (score >= 18) {
-                msg.textContent = '🎉 太勁喇！你係蜜蜂專家！';
+                msg.textContent = '🎉 Amazing! You are a Bee Expert!';
             } else if (score >= 12) {
-                msg.textContent = '👍 做得好！繼續學習！';
+                msg.textContent = '👍 Good job! Keep learning!';
             } else if (score >= 6) {
-                msg.textContent = '📚 再努力啲就得！';
+                msg.textContent = '📚 Try again to learn more!';
             } else {
-                msg.textContent = '💪 要溫多啲蜜蜂知識喇！';
+                msg.textContent = '💪 Study more about bees!';
             }
         }
 
