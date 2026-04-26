@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Comprehension Quiz 📖</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Comic Sans MS', sans-serif;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; color: white; margin-bottom: 20px; }
+        
+        .start-screen, .quiz-screen, .result-screen, .reading-screen { display: none; }
+        .start-screen.active, .quiz-screen.active, .result-screen.active, .reading-screen.active { display: block; }
+        
+        .start-screen, .reading-screen { text-align: center; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .start-screen h2, .reading-screen h2 { color: #11998e; margin-bottom: 15px; }
+        
+        .reading-text { 
+            text-align: left; 
+            background: #f9f9f9; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .btn { padding: 12px 30px; font-size: 1.1rem; border: none; border-radius: 50px; cursor: pointer; background: #11998e; color: white; font-weight: bold; }
+        .btn:hover { transform: scale(1.05); }
+        
+        .quiz-screen { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .progress { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; font-size: 0.9rem; }
+        .question { font-size: 1rem; color: #333; margin-bottom: 15px; line-height: 1.5; }
+        
+        .options { display: flex; flex-direction: column; gap: 8px; }
+        .option {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .option:hover { background: #e8f5f3; border-color: #11998e; }
+        .option.selected { background: #11998e; color: white; border-color: #0d7a6e; }
+        .option.correct { background: #4CAF50; color: white; border-color: #45a049; }
+        .option.wrong { background: #f44336; color: white; border-color: #da190b; }
+        
+        .next-btn { width: 100%; margin-top: 15px; }
+        
+        .result-screen { text-align: center; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .score { font-size: 3.5rem; color: #11998e; font-weight: bold; }
+        .score-label { font-size: 1.3rem; color: #666; margin-bottom: 15px; }
+        .message { font-size: 1.1rem; color: #333; margin: 15px 0; }
+        
+        .home-btn { background: #4CAF50; }
+        .restart-btn { background: #11998e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Pets Party Quiz</h1>
+        
+        <div class="start-screen active">
+            <h2>Reading Comprehension</h2>
+            <p>Read the story and answer 10 questions</p>
+            <button class="btn" onclick="startReading()">Start Reading 📖</button>
+        </div>
+        
+        <div class="reading-screen">
+            <h2>The Story</h2>
+            <div class="reading-text">
+                <b>Tom:</b> What is your pet, Mary?<br>
+                <b>Mary:</b> It is a cat. It is fat.<br><br>
+                <b>Tom:</b> Is it in the box?<br>
+                <b>Mary:</b> No, it is not. It is near the box.<br><br>
+                <b>Tom:</b> Where are your rabbits, Lily?<br>
+                <b>Lily:</b> They are on the cupboard.<br><br>
+                <b>Tom:</b> I like your rabbits. They are white and pink.<br><br>
+                <b>Lily:</b> Where is your hamster, Tom?<br>
+                <b>Tom:</b> LOOK! It is in my hair!
+            </div>
+            <button class="btn" onclick="startQuiz()">Start Quiz ▶️</button>
+        </div>
+        
+        <div class="quiz-screen">
+            <div class="progress">
+                <span>Q<span id="currentQ">1</span>/10</span>
+                <span>Score: <span id="score">0</span></span>
+            </div>
+            <div class="question" id="question">...</div>
+            <div class="options" id="options"></div>
+            <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()" style="display:none">Next ▶️</button>
+        </div>
+        
+        <div class="result-screen">
+            <div class="score" id="finalScore">0</div>
+            <div class="score-label">out of 10</div>
+            <div class="message" id="message">...</div>
+            <button class="btn restart-btn" onclick="restartQuiz()">Try Again 🔄</button>
+            <button class="btn home-btn" onclick="goHome()" style="margin-top:10px">Home 🏠</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // True or False
+            { q: "1. Mary's cat is fat.", options: ["A. True", "B. False"], answer: 0 },
+            { q: "2. Lily's rabbits are in the cupboard.", options: ["A. True", "B. False"], answer: 0 },
+            { q: "3. Mary's cat is in the box.", options: ["A. True", "B. False"], answer: 1 },
+            { q: "4. Tom's hamster is in his hair.", options: ["A. True", "B. False"], answer: 0 },
+            
+            // Multiple Choice
+            { q: "5. What colour are Lily's rabbits?", options: ["A. White and black", "B. White and pink", "C. White and purple", "D. White and red"], answer: 1 },
+            { q: "6. Where is Mary's cat?", options: ["A. In the box", "B. On the cupboard", "C. Near the box", "D. In Mary's hair"], answer: 2 },
+            { q: "7. Where are Lily's rabbits?", options: ["A. In the box", "B. On the cupboard", "C. Near the box", "D. In Lily's hair"], answer: 1 },
+            { q: "8. What is Mary's pet?", options: ["A. A rabbit", "B. A cat", "C. A hamster", "D. A dog"], answer: 1 },
+            { q: "9. What is Tom's pet?", options: ["A. A rabbit", "B. A cat", "C. A hamster", "D. A dog"], answer: 2 },
+            { q: "10. How many children have pets in the story?", options: ["A. 1", "B. 2", "C. 3", "D. 4"], answer: 2 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        function startReading() {
+            document.querySelector('.start-screen').classList.remove('active');
+            document.querySelector('.reading-screen').classList.add('active');
+        }
+
+        function startQuiz() {
+            document.querySelector('.reading-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('question').textContent = q.q;
+            document.getElementById('score').textContent = score;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = opt;
+                div.onclick = () => selectOption(i, div);
+                optionsDiv.appendChild(div);
+            });
+            
+            document.getElementById('nextBtn').style.display = 'none';
+            selectedAnswer = null;
+        }
+
+        function selectOption(i, div) {
+            if (selectedAnswer !== null) return;
+            selectedAnswer = i;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            div.classList.add('selected');
+            
+            const q = questions[currentQuestion];
+            if (i === q.answer) {
+                div.classList.add('correct');
+                score++;
+                document.getElementById('score').textContent = score;
+            } else {
+                div.classList.add('wrong');
+                options[q.answer].classList.add('correct');
+            }
+            
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= questions.length) {
+                showResult();
+            } else {
+                showQuestion();
+            }
+        }
+
+        function showResult() {
+            document.querySelector('.quiz-screen').classList.remove('active');
+            document.querySelector('.result-screen').classList.add('active');
+            document.getElementById('finalScore').textContent = score;
+            
+            const msg = document.getElementById('message');
+            if (score >= 9) {
+                msg.textContent = '🎉 Perfect! Great reading!';
+            } else if (score >= 7) {
+                msg.textContent = '👍 Well done!';
+            } else if (score >= 5) {
+                msg.textContent = '📚 Good effort!';
+            } else {
+                msg.textContent = '💪 Read again and try!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector('.result-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function goHome() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector('.result-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.remove('active');
+            document.querySelector('.reading-screen').classList.remove('active');
+            document.querySelector('.start-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>
